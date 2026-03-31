@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCSL Admin — Spring 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAZ12ICZLfkjEr15h6GzpXeBZ78-Mr0188",
+    authDomain: "tigers-4f98d.firebaseapp.com",
+    databaseURL: "https://tigers-4f98d-default-rtdb.firebaseio.com",
+    projectId: "tigers-4f98d",
+    storageBucket: "tigers-4f98d.appspot.com",
+    messagingSenderId: "placeholder",
+    appId: "placeholder"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  window._db = db;
+  window._ref = ref;
+  window._onValue = onValue;
+  window._set = set;
+  window._get = get;
+  window._firebaseReady = true;
+  document.dispatchEvent(new Event('firebaseReady'));
+</script>
+<style>
+:root {
+  --maroon: #321f20;
+  --maroon-light: #4a2d2e;
+  --maroon-dark: #1e1213;
+  --navy: #0d1b2a;
+  --navy-mid: #1b2e45;
+  --navy-light: #243c56;
+  --sky: #4db8e8;
+  --sky-light: #7dd4f5;
+  --sky-dark: #2a9fd6;
+  --gold: #f0c060;
+  --green: #4ade80;
+  --red: #f87171;
+  --orange: #fb923c;
+  --white: #f8fafc;
+  --muted: #94a3b8;
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'Barlow', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+[data-theme="dark"] {
+  --bg: #0a0f14;
+  --bg2: #111820;
+  --bg3: #192130;
+  --surface: #1a2535;
+  --surface2: #243040;
+  --border: #2d3f55;
+  --text: #e8f0fa;
+  --text2: #a0b4cc;
+  --text3: #607080;
+}
+[data-theme="light"] {
+  --bg: #f0f4f8;
+  --bg2: #e4ecf4;
+  --bg3: #d8e4f0;
+  --surface: #ffffff;
+  --surface2: #f0f6fc;
+  --border: #c4d4e4;
+  --text: #0d1b2a;
+  --text2: #3a5070;
+  --text3: #6888a0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* LOGIN */
+#loginScreen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, var(--maroon-dark) 0%, var(--bg) 70%);
+}
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--sky);
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+}
+.login-logo {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 2rem;
+  letter-spacing: 0.1em;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.login-logo span { color: var(--sky); }
+.login-sub { color: var(--text3); font-size: 0.85rem; margin-bottom: 28px; font-family: var(--font-mono); }
+.input-group { margin-bottom: 16px; text-align: left; }
+.input-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; margin-bottom: 6px; font-family: var(--font-mono); display: block; }
+.text-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+  transition: border-color 0.2s;
+}
+.text-input:focus { outline: none; border-color: var(--sky); }
+.btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, var(--maroon), var(--sky-dark));
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+.login-error { color: var(--red); font-size: 0.82rem; margin-top: 8px; font-family: var(--font-mono); }
+
+/* HEADER */
+.site-header {
+  background: var(--maroon);
+  border-bottom: 3px solid var(--sky-dark);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.site-header h1 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.6rem;
+  letter-spacing: 0.08em;
+  color: var(--white);
+  text-transform: uppercase;
+}
+.site-header h1 span { color: var(--sky); }
+.header-actions { display: flex; gap: 12px; align-items: center; }
+.admin-badge {
+  background: rgba(240,192,96,0.15);
+  border: 1px solid rgba(240,192,96,0.3);
+  color: var(--gold);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+}
+.btn-icon {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+.btn-icon:hover { background: rgba(255,255,255,0.2); }
+
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+  padding: 0 20px;
+  background: var(--surface);
+  overflow-x: auto;
+}
+.tab-btn {
+  padding: 14px 20px;
+  border: none;
+  background: none;
+  color: var(--text3);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: var(--font-body);
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.tab-btn.active { color: var(--sky); border-bottom-color: var(--sky); }
+.tab-btn:hover { color: var(--text); }
+
+/* MAIN */
+.container { max-width: 1200px; margin: 0 auto; padding: 24px 20px; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* SECTION */
+.section-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.card-header {
+  background: linear-gradient(135deg, var(--maroon), var(--maroon-dark));
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+.card-body { padding: 20px; }
+
+/* BILL STATUS TABLE */
+.admin-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.admin-table th {
+  background: var(--navy-mid);
+  color: rgba(255,255,255,0.7);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 10px 12px;
+  text-align: left;
+  position: sticky;
+  top: 64px;
+}
+.admin-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.83rem;
+  vertical-align: middle;
+}
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table tr { background: var(--surface); transition: background 0.15s; }
+.admin-table tr:hover td { background: var(--surface2); }
+.admin-table tr.current-row td { background: rgba(251,146,60,0.08); }
+.bill-num { font-family: var(--font-mono); font-weight: 600; color: var(--sky); }
+.bill-topic-short { color: var(--text2); font-size: 0.78rem; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hotness-indicator { display: flex; gap: 2px; }
+.hd { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
+.hd.filled { background: var(--orange); }
+.hd.filled.hi { background: var(--red); }
+
+/* STATUS BUTTONS */
+.status-btns { display: flex; gap: 4px; flex-wrap: wrap; }
+.sbtn {
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text3);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.sbtn:hover { background: var(--navy-mid); color: var(--text); }
+.sbtn.active-current { background: rgba(251,146,60,0.2); color: var(--orange); border-color: var(--orange); }
+.sbtn.active-passed { background: rgba(74,222,128,0.2); color: var(--green); border-color: var(--green); }
+.sbtn.active-failed { background: rgba(248,113,113,0.2); color: var(--red); border-color: var(--red); }
+.sbtn.active-tabled { background: rgba(240,192,96,0.2); color: var(--gold); border-color: var(--gold); }
+.sbtn.active-pending { background: rgba(77,184,232,0.15); color: var(--sky); border-color: var(--sky); }
+
+/* MINUTE INPUT */
+.min-input {
+  width: 65px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  text-align: center;
+}
+.min-input:focus { outline: none; border-color: var(--sky); }
+
+/* SCHEDULE EDITOR */
+.schedule-editor { display: flex; flex-direction: column; gap: 12px; }
+.sched-row {
+  display: grid;
+  grid-template-columns: 100px 1fr auto auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.sched-label { font-family: var(--font-mono); font-size: 0.8rem; color: var(--sky); font-weight: 600; }
+.time-input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  width: 90px;
+}
+.time-input:focus { outline: none; border-color: var(--sky); }
+.sched-dur { font-family: var(--font-mono); font-size: 0.8rem; color: var(--gold); min-width: 60px; }
+
+/* WHAT-IF PANEL */
+.whatif-panel {
+  background: var(--navy-mid);
+  border: 1px solid var(--navy-light);
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 16px;
+}
+.whatif-result { font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--sky); margin: 8px 0 4px; }
+.whatif-label { font-size: 0.72rem; color: var(--text3); font-family: var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* SEARCH + FILTER */
+.admin-toolbar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
+.search-input {
+  flex: 1;
+  min-width: 200px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+}
+.search-input:focus { outline: none; border-color: var(--sky); }
+.btn-sm {
+  padding: 7px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text2);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.2s;
+}
+.btn-sm:hover { background: var(--navy-mid); color: var(--text); }
+.btn-sm.primary { background: var(--sky-dark); border-color: var(--sky); color: white; }
+.btn-sm.danger { background: rgba(248,113,113,0.1); border-color: var(--red); color: var(--red); }
+
+/* SAVE INDICATOR */
+.save-indicator {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--green);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.save-indicator.show { opacity: 1; }
+
+/* STATS SUMMARY */
+.admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.mini-stat {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  text-align: center;
+}
+.mini-stat-val { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; color: var(--sky); }
+.mini-stat-label { font-size: 0.68rem; color: var(--text3); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* GOOGLE SHEETS */
+.sheets-form { display: grid; gap: 12px; }
+.sheets-status {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+}
+.sheets-status.connected { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); color: var(--green); }
+.sheets-status.disconnected { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: var(--red); }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--green);
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 0.85rem;
+  z-index: 1000;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s;
+  max-width: 300px;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* CURRENT BILL HIGHLIGHT */
+.current-bill-banner {
+  background: linear-gradient(135deg, rgba(251,146,60,0.15), rgba(251,146,60,0.05));
+  border: 1px solid rgba(251,146,60,0.4);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+.current-bill-label { font-family: var(--font-mono); font-size: 0.7rem; color: var(--orange); letter-spacing: 0.1em; text-transform: uppercase; }
+.current-bill-name { font-weight: 600; color: var(--text); margin-top: 2px; }
+.timer-display { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 700; color: var(--orange); }
+
+@media (max-width: 700px) {
+  .sched-row { grid-template-columns: 1fr 1fr; }
+  .admin-table { font-size: 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">SCSL <span>Admin</span></div>
+    <div class="login-sub">Spring 2026 Session Tracker</div>
+    <div class="input-group">
+      <label class="input-label">Admin Password</label>
+      <input type="password" class="text-input" id="passwordInput" placeholder="Enter password…" onkeydown="if(event.key==='Enter')login()">
+    </div>
+    <button class="btn-primary" onclick="login()">Access Admin Panel</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- MAIN APP (hidden until login) -->
+<div id="mainApp" style="display:none">
+  <header class="site-header">
+    <h1>SCSL <span>Admin</span></h1>
+    <div class="header-actions">
+      <span class="admin-badge">⚙ ADMIN</span>
+      <div class="save-indicator" id="saveIndicator">✓ Saved</div>
+      <button class="btn-icon" onclick="toggleTheme()" title="Toggle theme">🌓</button>
+      <a href="index.html" style="text-decoration:none">
+        <button class="btn-icon" title="View public page">👁</button>
+      </a>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('docket',this)">📋 Docket</button>
+    <button class="tab-btn" onclick="switchTab('schedule',this)">🗓 Schedule</button>
+    <button class="tab-btn" onclick="switchTab('whatif',this)">🔮 What-If</button>
+    <button class="tab-btn" onclick="switchTab('settings',this)">⚙️ Settings</button>
+  </div>
+
+  <div class="container">
+
+    <!-- DOCKET TAB -->
+    <div id="tab-docket" class="tab-panel active">
+      <div class="admin-stats" id="adminStats"></div>
+
+      <div id="currentBillBanner" style="display:none" class="current-bill-banner">
+        <div>
+          <div class="current-bill-label">🔴 Currently on Floor</div>
+          <div class="current-bill-name" id="currentBillName">—</div>
+        </div>
+        <div>
+          <div class="timer-display" id="floorTimer">0:00</div>
+          <div style="font-size:0.7rem;color:var(--text3);text-align:center;font-family:var(--font-mono)">floor time</div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="card-header">
+          <span class="card-title">Bill Status Tracker</span>
+          <span style="font-size:0.72rem;color:rgba(255,255,255,0.5);font-family:var(--font-mono)">78 BILLS</span>
+        </div>
+        <div class="card-body" style="padding:12px">
+          <div class="admin-toolbar">
+            <input type="text" class="search-input" id="adminSearch" placeholder="Search by number, topic, author, school…" oninput="adminFilter()">
+            <select id="adminFilterStatus" class="btn-sm" onchange="adminFilter()" style="height:36px">
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="current">On Floor</option>
+              <option value="passed">Passed</option>
+              <option value="failed">Failed</option>
+              <option value="tabled">Tabled</option>
+            </select>
+            <button class="btn-sm danger" onclick="confirmReset()">↺ Reset All</button>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Author / School</th>
+                  <th>Topic</th>
+                  <th>Heat</th>
+                  <th>Status</th>
+                  <th>Min</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminDocketBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE TAB -->
+    <div id="tab-schedule" class="tab-panel">
+      <div class="section-card">
+        <div class="card-header">
+          <span class="card-title">🗓 Floor Schedule Editor</span>
+          <button class="btn-sm primary" onclick="saveSchedule()">Save Schedule</button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:0.82rem;color:var(--text3);margin-bottom:16px;font-family:var(--font-mono)">
+            Edit start/end times for each floor session. Changes instantly recalculate projections.
+          </p>
+          <div class="schedule-editor" id="scheduleEditor"></div>
+          <div style="margin-top:16px;padding:12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+            <div style="font-size:0.7rem;color:var(--text3);font-family:var(--font-mono);margin-bottom:6px">TOTAL FLOOR TIME</div>
+            <div style="display:flex;gap:20px">
+              <div>
+                <div style="font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--sky)" id="totalFloorTime">—</div>
+                <div style="font-size:0.75rem;color:var(--text3)">hours scheduled</div>
+              </div>
+              <div>
+                <div style="font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--gold)" id="billCapacity">—</div>
+                <div style="font-size:0.75rem;color:var(--text3)">bills at 12 min avg</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHAT-IF TAB -->
+    <div id="tab-whatif" class="tab-panel">
+      <div class="section-card">
+        <div class="card-header">
+          <span class="card-title">🔮 What-If Scenario Planner</span>
+        </div>
+        <div class="card-body">
+          <p style="font-size:0.85rem;color:var(--text2);margin-bottom:20px;line-height:1.6">
+            Adjust the scenario parameters below to see how schedule changes affect the projected end time without changing the live schedule.
+          </p>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+            <div>
+              <label class="input-label" style="display:block;font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;margin-bottom:6px;font-family:var(--font-mono)">Avg Minutes Per Bill</label>
+              <input type="number" class="text-input" id="wiAvgMin" value="12" min="5" max="45" oninput="recalcWhatIf()" style="width:100%">
+            </div>
+            <div>
+              <label class="input-label" style="display:block;font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;margin-bottom:6px;font-family:var(--font-mono)">Bills Remaining</label>
+              <input type="number" class="text-input" id="wiBillsLeft" value="78" min="0" max="78" oninput="recalcWhatIf()" style="width:100%">
+            </div>
+          </div>
+
+          <p style="font-size:0.8rem;color:var(--text3);margin-bottom:14px;font-family:var(--font-mono)">ADJUST SCENARIO SCHEDULE (does not affect live schedule):</p>
+          <div id="whatIfScheduleEditor"></div>
+
+          <div class="whatif-panel" id="whatifResult">
+            <div class="whatif-label">Scenario Projected End</div>
+            <div class="whatif-result" id="wiEndTime">—</div>
+            <div style="font-size:0.85rem;color:var(--text2)" id="wiEndDay">Adjust parameters above</div>
+            <div style="margin-top:12px;font-size:0.8rem;color:var(--text3);font-family:var(--font-mono)" id="wiDetails"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div id="tab-settings" class="tab-panel">
+      <div class="section-card">
+        <div class="card-header"><span class="card-title">⚙️ API & Integration Settings</span></div>
+        <div class="card-body">
+          <div style="display:grid;gap:16px">
+            <div>
+              <label class="input-label" style="display:block;font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;margin-bottom:6px;font-family:var(--font-mono)">Groq API Key</label>
+              <div style="display:flex;gap:8px">
+                <input type="password" class="text-input" id="groqKeyInput" placeholder="gsk_…" style="flex:1">
+                <button class="btn-sm primary" onclick="saveGroqKey()">Save</button>
+              </div>
+              <p style="font-size:0.75rem;color:var(--text3);margin-top:6px">Get a free key at <a href="https://console.groq.com" target="_blank" style="color:var(--sky)">console.groq.com</a>. Stored securely in Firebase, not in code.</p>
+            </div>
+
+            <div>
+              <label class="input-label" style="display:block;font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;margin-bottom:6px;font-family:var(--font-mono)">Admin Password</label>
+              <div style="display:flex;gap:8px">
+                <input type="password" class="text-input" id="newPwInput" placeholder="New password…" style="flex:1">
+                <button class="btn-sm primary" onclick="savePassword()">Update</button>
+              </div>
+            </div>
+
+            <div style="border-top:1px solid var(--border);padding-top:16px">
+              <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;font-family:var(--font-mono);margin-bottom:12px">Google Sheets Integration (Optional)</div>
+              <div class="sheets-status disconnected" id="sheetsStatus">⚠ Not configured — using manual entry mode</div>
+              <div style="margin-top:12px;display:grid;gap:10px" class="sheets-form">
+                <input type="text" class="text-input" id="sheetsUrlInput" placeholder="Google Sheets published CSV URL (File → Share → Publish to web → CSV)">
+                <button class="btn-sm primary" onclick="connectSheets()">Connect Google Sheets</button>
+                <p style="font-size:0.75rem;color:var(--text3)">
+                  In Google Sheets: File → Share → Publish to web → Choose your sheet → CSV format → Copy link<br>
+                  Expected columns: Bill#, Status (pending/passed/failed/tabled), Minutes
+                </p>
+              </div>
+            </div>
+
+            <div style="border-top:1px solid var(--border);padding-top:16px">
+              <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;font-family:var(--font-mono);margin-bottom:12px">Danger Zone</div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <button class="btn-sm danger" onclick="confirmReset()">Reset All Bill Statuses</button>
+                <button class="btn-sm danger" onclick="clearHistory()">Clear End Time History</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="card-header"><span class="card-title">📋 Session Notes</span></div>
+        <div class="card-body">
+          <textarea class="text-input" id="sessionNotes" rows="6" placeholder="Add session notes, announcements, or context here…" style="width:100%;resize:vertical;line-height:1.6"></textarea>
+          <div style="margin-top:10px;display:flex;justify-content:flex-end">
+            <button class="btn-sm primary" onclick="saveNotes()">Save Notes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== BILL DATA ====================
+const BILLS = [
+  {num:20,author:"Emmy Omondi",school:"BJU",topic:"Hospital fraud / phantom billing and price gouging",hotness:2},
+  {num:23,author:"James Price",school:"BJU",topic:"Tax credits for workforce training programs",hotness:2},
+  {num:25,author:"Silas Kelton",school:"BJU",topic:"Increase tax on electric vehicles",hotness:3},
+  {num:27,author:"TJ Whaley",school:"BJU",topic:"Internships/apprenticeships for HS seniors",hotness:1},
+  {num:30,author:"Trevor Gearhart",school:"BJU",topic:"Abolish state income tax for minors",hotness:2},
+  {num:32,author:"Amiris Roberts",school:"CCU",topic:"Tiered driver competency assessment at license renewal",hotness:2},
+  {num:34,author:"Ashley Zito",school:"CCU",topic:"Annual audits of county child protective services",hotness:2},
+  {num:36,author:"Brian Hughes",school:"CCU",topic:"Financial assistance for college students GPA <3.0",hotness:2},
+  {num:38,author:"Camille Fortino",school:"CCU",topic:"Law enforcement misconduct reform",hotness:4},
+  {num:40,author:"Carson Hardee",school:"CCU",topic:"Firearm safety course for first-time handgun purchasers",hotness:5},
+  {num:42,author:"Chelsei Brown",school:"CCU",topic:"Due process — felony defendants copy of indictment",hotness:2},
+  {num:43,author:"Connor Mojo",school:"CCU",topic:"Require vets to report suspected animal cruelty",hotness:1},
+  {num:44,author:"Daniel Lala",school:"CCU",topic:"Amend Medical Ethics and Diversity Act",hotness:3},
+  {num:46,author:"Kallie Lacount",school:"CCU",topic:"Mental health conditions as excused school absences",hotness:2},
+  {num:48,author:"Franceska Guerrero",school:"CCU",topic:"Minimum marriage age 18 — no exceptions",hotness:3},
+  {num:50,author:"Kennedy Kovach",school:"CCU",topic:"Restrict AI in hiring to limit bias",hotness:4},
+  {num:52,author:"Lindsey Margerum",school:"CCU",topic:"Require dual citizenship disclosure on ballots",hotness:4},
+  {num:56,author:"Noah Burgan",school:"CCU",topic:"Free breakfast/lunch at all K-12 public schools",hotness:3},
+  {num:58,author:"Daiveon Glover",school:"FMU",topic:"Update SC public policy on same-sex marriage",hotness:5},
+  {num:59,author:"Ahmad Brown",school:"FMU",topic:"Require nonviolent juveniles to Youth Mentor Program",hotness:2},
+  {num:61,author:"Mary Leslee Moore",school:"FMU",topic:"Remove restrictions on tattoo facility locations",hotness:1},
+  {num:63,author:"Charlotte Sellers",school:"FMU",topic:"Reduce time to file nuisance action against shooting ranges",hotness:3},
+  {num:65,author:"Shay Churba",school:"FMU",topic:"Eliminate penalty for violating US/Confederate/SC flag",hotness:5},
+  {num:67,author:"Charity Turner",school:"FMU",topic:"Regulate PFAS substances in SC waterways",hotness:2},
+  {num:69,author:"Zachary Lingerman",school:"FMU",topic:"Establish ranked-choice voting",hotness:4},
+  {num:72,author:"Connor Denny",school:"FMU",topic:"Remove most restrictions on sawed-off shotguns",hotness:5},
+  {num:76,author:"Nathaniel Roberts",school:"CSU",topic:"Intersection safety / reduce traffic fatalities",hotness:1},
+  {num:79,author:"Kaitlyn Conner",school:"CSU",topic:"Reduce prescription pollution in SC",hotness:2},
+  {num:80,author:"Graycee Dorner",school:"CSU",topic:"Tax exception for small businesses",hotness:2},
+  {num:82,author:"Seth Nolan",school:"CSU",topic:"Prohibit noncompetition covenants",hotness:3},
+  {num:84,author:"Evan Wilson",school:"CSU",topic:"Religious nonprofits build affordable housing",hotness:3},
+  {num:86,author:"Ashley Butler",school:"CSU",topic:"Require calorie info on restaurant menus",hotness:2},
+  {num:88,author:"Jocelyn Lassiter",school:"CSU",topic:"Increase unmarked police cruisers",hotness:3},
+  {num:89,author:"Macie Thomas",school:"CSU",topic:"Expand adults who may file protection order for minor",hotness:1},
+  {num:90,author:"Alex Melgar",school:"PC",topic:"Allow undocumented immigrants driving privilege card",hotness:5},
+  {num:92,author:"Andy Robertson",school:"PC",topic:"School resource officers need prior law enforcement experience",hotness:2},
+  {num:93,author:"Auden Uhl-Banks",school:"PC",topic:"Restructure campaign communication disclaimer requirements",hotness:2},
+  {num:95,author:"Carmelo Robinson",school:"PC",topic:"Prohibit banning books in school libraries",hotness:5},
+  {num:97,author:"Jacob Kerwin",school:"PC",topic:"Allow liquor sales in grocery stores and gas stations",hotness:4},
+  {num:98,author:"Katelynn Ryan",school:"PC",topic:"Free state fitness facilities for US Army members",hotness:1},
+  {num:99,author:"Kayla McCabe",school:"PC",topic:"Prohibit PFAS in food-contact packaging",hotness:2},
+  {num:101,author:"Ladson Porter",school:"PC",topic:"Decriminalize consensual buggery between adults",hotness:5},
+  {num:102,author:"Lana Clayton",school:"PC",topic:"Update policies on avenues for illegal immigrants",hotness:5},
+  {num:105,author:"Michael Cody",school:"PC",topic:"Reduce favoritism in public school teacher hiring",hotness:2},
+  {num:107,author:"Taylor Wooten",school:"PC",topic:"Expand affordable housing near colleges",hotness:3},
+  {num:110,author:"Thatcher Hutton",school:"PC",topic:"Stricter guidelines for release of repeat violent offenders",hotness:3},
+  {num:112,author:"Annika Rauhut",school:"Clemson",topic:"Regulate antidepressant prescriptions by GPs",hotness:3},
+  {num:115,author:"Fiona Tworkowski",school:"Clemson",topic:"Require AI usage in all SC instructional facilities",hotness:4},
+  {num:117,author:"Charley Phy",school:"Clemson",topic:"Funeral homes report deaths to election commission",hotness:1},
+  {num:120,author:"James Pinner",school:"Clemson",topic:"Drivers 65+ retake driving test every 2 years",hotness:4},
+  {num:122,author:"Ellisen Berry",school:"Clemson",topic:"Restrict alcohol for extreme/repeat DUI offenders",hotness:3},
+  {num:127,author:"Matthew Langton",school:"Clemson",topic:"Allow public schools to adopt four-day school week",hotness:5},
+  {num:129,author:"Sarah Moorshead",school:"Clemson",topic:"Protect health and wellness of SC children",hotness:2},
+  {num:132,author:"Sarah Herzberg",school:"Clemson",topic:"Free course materials access at public colleges",hotness:2},
+  {num:134,author:"Grayson Alexander",school:"Clemson",topic:"Increase minimum wage annually based on inflation",hotness:4},
+  {num:136,author:"Ava Urban",school:"Clemson",topic:"Privatize SC DMV",hotness:4},
+  {num:139,author:"Peter McLean",school:"Clemson",topic:"Separation of Church and State Act",hotness:5},
+  {num:142,author:"Max Charles",school:"Clemson",topic:"Prohibit private equity from buying single-family homes",hotness:4},
+  {num:144,author:"Walker Green",school:"Clemson",topic:"Protect SCSL executive committee structure",hotness:3},
+  {num:146,author:"Zoey Sapp",school:"Clemson",topic:"Guidelines on child age in custodial preference",hotness:2},
+  {num:148,author:"Brooke Kelly",school:"USC",topic:"Encourage responsible family planning (tax code)",hotness:4},
+  {num:153,author:"Chance Kirby",school:"USC",topic:"Create a South Carolina stable coin",hotness:4},
+  {num:159,author:"Clarissa Bues",school:"USC",topic:"Prohibit oil/gas drilling in national parks/refuges",hotness:4},
+  {num:161,author:"Derrick Wargo",school:"USC",topic:"Create a new legal holiday in SC",hotness:2},
+  {num:163,author:"Derrick Wargo & Brooke Kelly",school:"USC",topic:"Formalize SCSL session host site selection",hotness:2},
+  {num:165,author:"Doug Ruff",school:"USC",topic:"Require boat/watercraft liability insurance",hotness:1},
+  {num:167,author:"Kaleelah El-Amin",school:"USC",topic:"Ensure children identified properly re: parentage",hotness:3},
+  {num:168,author:"Lara Glasser",school:"USC",topic:"Strengthen restrictions on shoreline armoring",hotness:2},
+  {num:169,author:"Lester Lewis",school:"USC",topic:"Prohibit new tenure at public universities",hotness:5},
+  {num:170,author:"Max Brabham",school:"USC",topic:"Improve and protect health of SC citizens",hotness:2},
+  {num:172,author:"Meredyth Blake",school:"USC",topic:"Gardening as a high school course elective",hotness:1},
+  {num:173,author:"Nailah Brown",school:"USC",topic:"Statewide literacy improvement for elementary schools",hotness:2},
+  {num:175,author:"Payton Ward",school:"USC",topic:"Require student ID to enter public college buildings",hotness:3},
+  {num:177,author:"Reagan Quast",school:"USC",topic:"Provide cultural improvements through circuses",hotness:3},
+  {num:178,author:"Ryan Young",school:"USC",topic:"Increase school immunization requirements",hotness:4},
+  {num:180,author:"Sami Gunter",school:"USC",topic:"Reform drug possession laws / expand rehabilitation",hotness:4},
+  {num:182,author:"Tyler Morgan",school:"USC",topic:"Reform asset forfeiture process",hotness:3},
+  {num:186,author:"Damien Barber",school:"USC",topic:"Establish motor vehicle safety standards in SC",hotness:2},
+];
+
+const DEFAULT_SCHEDULE = [
+  {day:"Wed",label:"Wednesday AM",start:"10:30",end:"12:30",dayIdx:0},
+  {day:"Wed",label:"Wednesday PM",start:"13:30",end:"17:00",dayIdx:0},
+  {day:"Thu",label:"Thursday AM",start:"09:30",end:"12:30",dayIdx:1},
+  {day:"Thu",label:"Thursday PM",start:"13:30",end:"16:30",dayIdx:1},
+  {day:"Fri",label:"Friday AM",start:"09:30",end:"12:30",dayIdx:2},
+  {day:"Fri",label:"Friday PM",start:"13:30",end:"16:00",dayIdx:2},
+];
+
+let bills = {};
+let schedule = JSON.parse(JSON.stringify(DEFAULT_SCHEDULE));
+let whatIfSchedule = JSON.parse(JSON.stringify(DEFAULT_SCHEDULE));
+let adminSearchVal = '';
+let adminFilterVal = 'all';
+let floorTimerStart = null;
+let floorTimerInterval = null;
+let currentBillNum = null;
+
+// ==================== AUTH ====================
+const ADMIN_PW_KEY = 'scsl_admin_pw';
+function login() {
+  const pw = document.getElementById('passwordInput').value;
+  const stored = localStorage.getItem(ADMIN_PW_KEY) || 'tigers';
+  if (pw === stored) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    initFirebase();
+  } else {
+    document.getElementById('loginError').textContent = 'Incorrect password.';
+    document.getElementById('passwordInput').value = '';
+  }
+}
+function savePassword() {
+  const pw = document.getElementById('newPwInput').value.trim();
+  if (!pw) return showToast('Password cannot be empty');
+  localStorage.setItem(ADMIN_PW_KEY, pw);
+  showToast('Password updated');
+  document.getElementById('newPwInput').value = '';
+}
+
+// ==================== FIREBASE ====================
+function initFirebase() {
+  if (!window._firebaseReady) { document.addEventListener('firebaseReady', initFirebase); return; }
+  const db = window._db;
+  const ref = window._ref;
+  const onValue = window._onValue;
+
+  onValue(ref(db, 'scsl/bills'), (snap) => {
+    const data = snap.val();
+    if (data) { bills = data; }
+    else {
+      bills = {};
+      BILLS.forEach((b,i) => { bills[b.num] = {status:'pending', minutes:null, order:i}; });
+    }
+    renderAdminDocket();
+    updateAdminStats();
+    updateCurrentBillBanner();
+  });
+
+  onValue(ref(db, 'scsl/schedule'), (snap) => {
+    const data = snap.val();
+    if (data) { schedule = data; whatIfSchedule = JSON.parse(JSON.stringify(data)); }
+    renderScheduleEditor();
+    renderWhatIfEditor();
+    recalcWhatIf();
+  });
+
+  onValue(ref(db, 'scsl/config/groqKey'), (snap) => {
+    if (snap.val()) document.getElementById('groqKeyInput').value = '••••••••••••••••';
+  });
+
+  onValue(ref(db, 'scsl/config/sessionNotes'), (snap) => {
+    if (snap.val()) document.getElementById('sessionNotes').value = snap.val();
+  });
+}
+
+function saveBill(num, field, value) {
+  if (!window._firebaseReady) return;
+  const db = window._db;
+  const ref = window._ref;
+  const set = window._set;
+  if (!bills[num]) bills[num] = {status:'pending', minutes:null, order:0};
+  bills[num][field] = value;
+  set(ref(db, `scsl/bills/${num}`), bills[num]);
+  showSaveIndicator();
+}
+
+function showSaveIndicator() {
+  const el = document.getElementById('saveIndicator');
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// ==================== ADMIN DOCKET ====================
+function renderAdminDocket() {
+  const tbody = document.getElementById('adminDocketBody');
+  let filtered = BILLS.map(b => ({...b, ...(bills[b.num]||{status:'pending',minutes:null})}));
+  if (adminFilterVal !== 'all') filtered = filtered.filter(b => b.status === adminFilterVal);
+  if (adminSearchVal) {
+    const q = adminSearchVal.toLowerCase();
+    filtered = filtered.filter(b =>
+      b.num.toString().includes(q) ||
+      b.topic.toLowerCase().includes(q) ||
+      b.author.toLowerCase().includes(q) ||
+      b.school.toLowerCase().includes(q)
+    );
+  }
+
+  tbody.innerHTML = filtered.map(b => {
+    const dots = Array.from({length:5},(_,i)=>`<div class="hd${i<b.hotness?' filled'+(b.hotness>=4?' hi':''):''}"></div>`).join('');
+    const statuses = ['pending','current','passed','failed','tabled'];
+    const btnLabels = ['Pending','🔴 Floor','✅ Pass','❌ Fail','⏸ Table'];
+    const btns = statuses.map((s,i) => `<button class="sbtn${b.status===s?' active-'+s:''}" onclick="setBillStatus(${b.num},'${s}')">${btnLabels[i]}</button>`).join('');
+    const minVal = b.minutes || '';
+    return `<tr class="${b.status==='current'?'current-row':''}">
+      <td><span class="bill-num">#${b.num}</span></td>
+      <td style="font-size:0.78rem"><div>${b.author}</div><div style="color:var(--text3);font-family:var(--font-mono);font-size:0.7rem">${b.school}</div></td>
+      <td><div class="bill-topic-short" title="${b.topic}">${b.topic}</div></td>
+      <td><div class="hotness-indicator">${dots}</div></td>
+      <td><div class="status-btns">${btns}</div></td>
+      <td><input type="number" class="min-input" value="${minVal}" placeholder="—" min="1" max="120" onchange="setBillMinutes(${b.num},this.value)" title="Minutes on floor"></td>
+      <td></td>
+    </tr>`;
+  }).join('');
+}
+
+function setBillStatus(num, status) {
+  if (!bills[num]) bills[num] = {status:'pending', minutes:null, order:0};
+  bills[num].status = status;
+  
+  // Handle floor timer
+  if (status === 'current') {
+    currentBillNum = num;
+    floorTimerStart = Date.now();
+    if (floorTimerInterval) clearInterval(floorTimerInterval);
+    floorTimerInterval = setInterval(updateFloorTimer, 1000);
+  } else if (currentBillNum === num) {
+    // Bill leaving floor — save elapsed time
+    if (floorTimerStart) {
+      const elapsed = Math.round((Date.now() - floorTimerStart) / 60000);
+      if (elapsed > 0 && !bills[num].minutes) bills[num].minutes = elapsed;
+    }
+    currentBillNum = null;
+    floorTimerStart = null;
+    if (floorTimerInterval) { clearInterval(floorTimerInterval); floorTimerInterval = null; }
+  }
+  
+  saveBill(num, 'status', status);
+  renderAdminDocket();
+  updateAdminStats();
+  updateCurrentBillBanner();
+}
+
+function setBillMinutes(num, val) {
+  const mins = parseInt(val);
+  if (!isNaN(mins) && mins > 0) saveBill(num, 'minutes', mins);
+}
+
+function updateFloorTimer() {
+  if (!floorTimerStart) return;
+  const elapsed = Math.floor((Date.now()-floorTimerStart)/1000);
+  const mins = Math.floor(elapsed/60);
+  const secs = elapsed%60;
+  document.getElementById('floorTimer').textContent = `${mins}:${secs.toString().padStart(2,'0')}`;
+}
+
+function updateCurrentBillBanner() {
+  const banner = document.getElementById('currentBillBanner');
+  const currentBills = BILLS.filter(b => (bills[b.num]||{}).status==='current');
+  if (currentBills.length > 0) {
+    const b = currentBills[0];
+    document.getElementById('currentBillName').textContent = `Bill #${b.num}: ${b.topic}`;
+    banner.style.display = 'flex';
+    if (!floorTimerStart) { floorTimerStart = Date.now(); floorTimerInterval = setInterval(updateFloorTimer, 1000); }
+  } else {
+    banner.style.display = 'none';
+    if (floorTimerInterval) { clearInterval(floorTimerInterval); floorTimerInterval = null; }
+  }
+}
+
+function adminFilter() {
+  adminSearchVal = document.getElementById('adminSearch').value;
+  adminFilterVal = document.getElementById('adminFilterStatus').value;
+  renderAdminDocket();
+}
+
+function updateAdminStats() {
+  const counts = {pending:0,current:0,passed:0,failed:0,tabled:0};
+  BILLS.forEach(b => { const s = (bills[b.num]||{}).status||'pending'; counts[s]=(counts[s]||0)+1; });
+  const done = counts.passed + counts.failed;
+  const el = document.getElementById('adminStats');
+  el.innerHTML = `
+    <div class="mini-stat"><div class="mini-stat-val" style="color:var(--green)">${counts.passed}</div><div class="mini-stat-label">Passed</div></div>
+    <div class="mini-stat"><div class="mini-stat-val" style="color:var(--red)">${counts.failed}</div><div class="mini-stat-label">Failed</div></div>
+    <div class="mini-stat"><div class="mini-stat-val" style="color:var(--gold)">${counts.tabled}</div><div class="mini-stat-label">Tabled</div></div>
+    <div class="mini-stat"><div class="mini-stat-val" style="color:var(--sky)">${counts.pending}</div><div class="mini-stat-label">Pending</div></div>
+    <div class="mini-stat"><div class="mini-stat-val" style="color:var(--orange)">${counts.current}</div><div class="mini-stat-label">On Floor</div></div>
+    <div class="mini-stat"><div class="mini-stat-val">${Math.round(done/78*100)}%</div><div class="mini-stat-label">Complete</div></div>
+  `;
+}
+
+// ==================== SCHEDULE EDITOR ====================
+function renderScheduleEditor() {
+  const el = document.getElementById('scheduleEditor');
+  el.innerHTML = schedule.map((s,i) => `
+    <div class="sched-row">
+      <div class="sched-label">${s.label}</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:0.75rem;color:var(--text3)">Start:</span>
+        <input type="time" class="time-input" value="${s.start}" onchange="updateScheduleTime(${i},'start',this.value)">
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:0.75rem;color:var(--text3)">End:</span>
+        <input type="time" class="time-input" value="${s.end}" onchange="updateScheduleTime(${i},'end',this.value)">
+      </div>
+      <div class="sched-dur" id="schDur${i}">${calcDur(s.start,s.end)}</div>
+    </div>
+  `).join('');
+  updateScheduleTotals();
+}
+
+function calcDur(start, end) {
+  const m = parseTime(end)-parseTime(start);
+  return m > 0 ? `${Math.floor(m/60)}h ${m%60}m` : '—';
+}
+function parseTime(str) { const [h,m]=str.split(':').map(Number); return h*60+m; }
+
+function updateScheduleTime(idx, field, val) {
+  schedule[idx][field] = val;
+  document.getElementById(`schDur${idx}`).textContent = calcDur(schedule[idx].start, schedule[idx].end);
+  updateScheduleTotals();
+}
+
+function updateScheduleTotals() {
+  const total = schedule.reduce((s,b)=>s+(parseTime(b.end)-parseTime(b.start)),0);
+  document.getElementById('totalFloorTime').textContent = (total/60).toFixed(1);
+  document.getElementById('billCapacity').textContent = Math.floor(total/12);
+}
+
+function saveSchedule() {
+  if (!window._firebaseReady) return showToast('Firebase not ready');
+  const db = window._db;
+  const ref = window._ref;
+  const set = window._set;
+  set(ref(db, 'scsl/schedule'), schedule);
+  showToast('Schedule saved!');
+  showSaveIndicator();
+}
+
+// ==================== WHAT-IF ====================
+function renderWhatIfEditor() {
+  whatIfSchedule = JSON.parse(JSON.stringify(schedule));
+  const el = document.getElementById('whatIfScheduleEditor');
+  el.innerHTML = `<div style="display:grid;gap:10px;margin-bottom:16px">` +
+    whatIfSchedule.map((s,i) => `
+    <div class="sched-row">
+      <div class="sched-label">${s.label}</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:0.75rem;color:var(--text3)">Start:</span>
+        <input type="time" class="time-input" value="${s.start}" onchange="updateWhatIf(${i},'start',this.value)">
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:0.75rem;color:var(--text3)">End:</span>
+        <input type="time" class="time-input" value="${s.end}" onchange="updateWhatIf(${i},'end',this.value)">
+      </div>
+      <div class="sched-dur">${calcDur(s.start,s.end)}</div>
+    </div>
+  `).join('') + `</div>`;
+  recalcWhatIf();
+}
+
+function updateWhatIf(idx, field, val) {
+  whatIfSchedule[idx][field] = val;
+  recalcWhatIf();
+}
+
+function recalcWhatIf() {
+  const avgMin = parseFloat(document.getElementById('wiAvgMin').value) || 12;
+  const billsLeft = parseInt(document.getElementById('wiBillsLeft').value) || 78;
+  
+  // Calculate hot bills in remaining
+  const allBills = BILLS.map(b => ({...b,...(bills[b.num]||{status:'pending'})}));
+  const hotFraction = allBills.filter(b=>b.hotness>=4).length / BILLS.length;
+  
+  let timeNeeded = 0;
+  for (let i = 0; i < billsLeft; i++) {
+    // Rough estimate: fraction of hot bills
+    const isHot = Math.random() < hotFraction; // deterministic would be better but this is preview
+    timeNeeded += isHot ? avgMin * 1.4 : avgMin;
+  }
+  timeNeeded += whatIfSchedule.length * 5; // start gaps
+
+  const result = projectEndTime(timeNeeded, whatIfSchedule);
+  document.getElementById('wiEndTime').textContent = result.timeStr;
+  document.getElementById('wiEndDay').textContent = result.dayStr;
+  document.getElementById('wiDetails').textContent = `~${Math.round(timeNeeded)} min needed · ${(timeNeeded/60).toFixed(1)} hrs · ${billsLeft} bills × ${avgMin} min avg`;
+}
+
+function projectEndTime(minutesNeeded, sched) {
+  const dayNames = ['Wednesday','Thursday','Friday'];
+  function minsToTime(mins) {
+    const h = Math.floor(mins/60)%24;
+    const m = mins%60;
+    const ampm = h>=12?'PM':'AM';
+    const h12 = h>12?h-12:(h===0?12:h);
+    return `${h12}:${m.toString().padStart(2,'0')} ${ampm}`;
+  }
+  let minsLeft = minutesNeeded;
+  for (let i = 0; i < sched.length; i++) {
+    const s = sched[i];
+    const dur = parseTime(s.end)-parseTime(s.start);
+    if (minsLeft <= dur) {
+      const endMins = parseTime(s.start)+minsLeft;
+      return { timeStr: minsToTime(endMins), dayStr: dayNames[s.dayIdx]||'', onTrack: s.dayIdx<2||(s.dayIdx===2&&endMins<=parseTime('12:30')) };
+    }
+    minsLeft -= dur;
+  }
+  return { timeStr: "Over Schedule", dayStr: "Beyond floor time", onTrack: false };
+}
+
+// ==================== SETTINGS ====================
+function saveGroqKey() {
+  if (!window._firebaseReady) return showToast('Firebase not ready');
+  const key = document.getElementById('groqKeyInput').value.trim();
+  if (!key || key.includes('•')) return showToast('Enter a valid key');
+  const db = window._db; const ref = window._ref; const set = window._set;
+  set(ref(db, 'scsl/config/groqKey'), key);
+  showToast('Groq API key saved!');
+  document.getElementById('groqKeyInput').value = '••••••••••••••••';
+}
+
+function saveNotes() {
+  if (!window._firebaseReady) return showToast('Firebase not ready');
+  const notes = document.getElementById('sessionNotes').value;
+  const db = window._db; const ref = window._ref; const set = window._set;
+  set(ref(db, 'scsl/config/sessionNotes'), notes);
+  showToast('Notes saved!');
+}
+
+async function connectSheets() {
+  const url = document.getElementById('sheetsUrlInput').value.trim();
+  if (!url) return showToast('Enter a Google Sheets CSV URL');
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('Could not fetch sheet');
+    const text = await resp.text();
+    const lines = text.split('\n').slice(1); // skip header
+    let updated = 0;
+    lines.forEach(line => {
+      const cols = line.split(',');
+      if (cols[0]) {
+        const num = parseInt(cols[0].trim());
+        const status = (cols[1]||'pending').trim().toLowerCase();
+        const mins = parseInt(cols[2])||null;
+        if (num && BILLS.find(b=>b.num===num)) {
+          if (!bills[num]) bills[num] = {status:'pending',minutes:null,order:0};
+          bills[num].status = status;
+          if (mins) bills[num].minutes = mins;
+          updated++;
+        }
+      }
+    });
+    if (window._firebaseReady) {
+      const db = window._db; const ref = window._ref; const set = window._set;
+      set(ref(db, 'scsl/bills'), bills);
+      set(ref(db, 'scsl/config/sheetsUrl'), url);
+    }
+    document.getElementById('sheetsStatus').className = 'sheets-status connected';
+    document.getElementById('sheetsStatus').textContent = `✓ Connected — ${updated} bills updated from Google Sheets`;
+    showToast(`Imported ${updated} bill statuses`);
+  } catch(e) {
+    showToast(`Error: ${e.message}`);
+  }
+}
+
+function confirmReset() {
+  if (!confirm('Reset ALL bill statuses to pending? This cannot be undone.')) return;
+  BILLS.forEach((b,i) => { bills[b.num] = {status:'pending',minutes:null,order:i}; });
+  if (window._firebaseReady) {
+    const db = window._db; const ref = window._ref; const set = window._set;
+    set(ref(db, 'scsl/bills'), bills);
+  }
+  renderAdminDocket();
+  updateAdminStats();
+  showToast('All bills reset to pending');
+}
+
+function clearHistory() {
+  if (!confirm('Clear end time history chart data?')) return;
+  if (window._firebaseReady) {
+    const db = window._db; const ref = window._ref; const set = window._set;
+    set(ref(db, 'scsl/endTimeHistory'), null);
+  }
+  showToast('History cleared');
+}
+
+// ==================== TABS ====================
+function switchTab(name, el) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`tab-${name}`).classList.add('active');
+  el.classList.add('active');
+  if (name === 'whatif') recalcWhatIf();
+}
+
+// ==================== THEME ====================
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme');
+  html.setAttribute('data-theme', current==='dark'?'light':'dark');
+  localStorage.setItem('theme', html.getAttribute('data-theme'));
+}
+(function() {
+  const saved = localStorage.getItem('theme');
+  if (saved) document.documentElement.setAttribute('data-theme', saved);
+})();
+
+// ==================== TOAST ====================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ==================== INIT ====================
+window.addEventListener('DOMContentLoaded', () => {
+  renderScheduleEditor();
+  renderWhatIfEditor();
+  updateAdminStats();
+  renderAdminDocket();
+});
+
+// Expose globals
+window.login = login;
+window.switchTab = switchTab;
+window.setBillStatus = setBillStatus;
+window.setBillMinutes = setBillMinutes;
+window.adminFilter = adminFilter;
+window.updateScheduleTime = updateScheduleTime;
+window.saveSchedule = saveSchedule;
+window.updateWhatIf = updateWhatIf;
+window.recalcWhatIf = recalcWhatIf;
+window.saveGroqKey = saveGroqKey;
+window.savePassword = savePassword;
+window.saveNotes = saveNotes;
+window.connectSheets = connectSheets;
+window.confirmReset = confirmReset;
+window.clearHistory = clearHistory;
+window.toggleTheme = toggleTheme;
+</script>
+</body>
+</html>
