@@ -14,13 +14,14 @@
   import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
   const firebaseConfig = {
-    apiKey: "REPLACE_WITH_YOUR_API_KEY",
-    authDomain: "REPLACE_WITH_YOUR_PROJECT.firebaseapp.com",
-    databaseURL: "https://REPLACE_WITH_YOUR_PROJECT-default-rtdb.firebaseio.com",
-    projectId: "REPLACE_WITH_YOUR_PROJECT",
-    storageBucket: "REPLACE_WITH_YOUR_PROJECT.appspot.com",
-    messagingSenderId: "REPLACE_WITH_MESSAGING_ID",
-    appId: "REPLACE_WITH_APP_ID"
+    apiKey: "AIzaSyCGWmE_7Ro1ItkywmeUl9NkczfVX9YgdDc",
+    authDomain: "scsl-tracker-2026.firebaseapp.com",
+    databaseURL: "https://scsl-tracker-2026-default-rtdb.firebaseio.com",
+    projectId: "scsl-tracker-2026",
+    storageBucket: "scsl-tracker-2026.firebasestorage.app",
+    messagingSenderId: "883777937178",
+    appId: "1:883777937178:web:f9dfc6e0c60b33548f96a3",
+    measurementId: "G-43MEW7YF44"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -330,18 +331,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
           <div class="day-dates-section">
             <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;font-family:var(--font-mono)">Session Dates</div>
             <div style="font-size:0.79rem;color:var(--text3);margin-top:4px">Set the actual calendar dates for each day of session. Used for display and time calculations.</div>
+            <div style="font-size:0.78rem;color:var(--sky);font-family:var(--font-mono);margin-bottom:10px">
+              📅 Set the <strong>Start Date</strong> — Day 2 and Day 3 auto-calculate as the next two consecutive days.
+            </div>
             <div class="day-dates-grid">
               <div class="day-date-item">
-                <label>Day 1 — Wednesday</label>
-                <input type="date" id="dateDay0" onchange="saveDates()">
+                <label>📅 Start Date — Day 1 (Wednesday)</label>
+                <input type="date" id="dateDay0" onchange="saveDates()" style="border-color:var(--sky)">
+                <div style="font-size:0.68rem;color:var(--text3);margin-top:3px;font-family:var(--font-mono)" id="dateDayLabel0"></div>
               </div>
               <div class="day-date-item">
-                <label>Day 2 — Thursday</label>
-                <input type="date" id="dateDay1" onchange="saveDates()">
+                <label>Day 2 — Thursday (auto)</label>
+                <input type="date" id="dateDay1" onchange="saveDates()" style="opacity:0.8">
+                <div style="font-size:0.68rem;color:var(--text3);margin-top:3px;font-family:var(--font-mono)" id="dateDayLabel1"></div>
               </div>
               <div class="day-date-item">
-                <label>Day 3 — Friday</label>
-                <input type="date" id="dateDay2" onchange="saveDates()">
+                <label>Day 3 — Friday (auto)</label>
+                <input type="date" id="dateDay2" onchange="saveDates()" style="opacity:0.8">
+                <div style="font-size:0.68rem;color:var(--text3);margin-top:3px;font-family:var(--font-mono)" id="dateDayLabel2"></div>
               </div>
             </div>
           </div>
@@ -454,7 +461,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
             <div>
               <label class="input-label" style="display:block;font-size:0.68rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;font-family:var(--font-mono)">Groq API Key (for AI Analyst)</label>
               <div style="display:flex;gap:8px">
-                <input type="password" class="text-input" id="groqKeyInput" placeholder="gsk_…" style="flex:1">
+                <input type="password" class="text-input" id="groqKeyInput" placeholder="gsk_…" style="flex:1" value="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">
                 <button class="btn-sm primary" onclick="saveGroqKey()">Save</button>
               </div>
               <p style="font-size:0.73rem;color:var(--text3);margin-top:5px">Get a free key at <a href="https://console.groq.com" target="_blank" style="color:var(--sky)">console.groq.com</a>. Stored in Firebase — never visible in page source.</p>
@@ -680,6 +687,7 @@ function initFirebase() {
       if (data[0]) document.getElementById('dateDay0').value = data[0];
       if (data[1]) document.getElementById('dateDay1').value = data[1];
       if (data[2]) document.getElementById('dateDay2').value = data[2];
+      renderScheduleTotalsWithDates();
     }
   });
 
@@ -957,9 +965,40 @@ function saveSchedule() {
 }
 function saveDates() {
   sessionDates[0] = document.getElementById('dateDay0').value;
-  sessionDates[1] = document.getElementById('dateDay1').value;
-  sessionDates[2] = document.getElementById('dateDay2').value;
+  // Auto-calculate Day 2 and Day 3 from Day 1
+  if (sessionDates[0]) {
+    const d0 = new Date(sessionDates[0] + 'T12:00:00');
+    const d1 = new Date(d0); d1.setDate(d0.getDate() + 1);
+    const d2 = new Date(d0); d2.setDate(d0.getDate() + 2);
+    const fmt = (d) => d.toISOString().split('T')[0];
+    // Only auto-fill if user hasn't manually set them
+    const el1 = document.getElementById('dateDay1');
+    const el2 = document.getElementById('dateDay2');
+    el1.value = fmt(d1);
+    el2.value = fmt(d2);
+    sessionDates[1] = fmt(d1);
+    sessionDates[2] = fmt(d2);
+  } else {
+    sessionDates[1] = document.getElementById('dateDay1').value;
+    sessionDates[2] = document.getElementById('dateDay2').value;
+  }
   if (window._firebaseReady) window._set(window._ref(window._db, 'scsl/sessionDates'), sessionDates);
+  renderScheduleTotalsWithDates();
+}
+
+function renderScheduleTotalsWithDates() {
+  // Update date display labels
+  const dayNames = ['Wednesday','Thursday','Friday'];
+  for (let i = 0; i < 3; i++) {
+    if (sessionDates[i]) {
+      try {
+        const d = new Date(sessionDates[i] + 'T12:00:00');
+        const label = d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+        const lEl = document.getElementById('dateDayLabel' + i);
+        if (lEl) lEl.textContent = label;
+      } catch(e) {}
+    }
+  }
 }
 
 // ==================== WHAT-IF ====================
@@ -1436,7 +1475,7 @@ window.login=login; window.switchTab=switchTab;
 window.setBillStatus=setBillStatus; window.setBillMinutes=setBillMinutes;
 window.setBillVote=setBillVote; window.setBillTime=setBillTime;
 window.adminFilter=adminFilter;
-window.updateScheduleTime=updateScheduleTime; window.saveSchedule=saveSchedule; window.saveDates=saveDates;
+window.updateScheduleTime=updateScheduleTime; window.saveSchedule=saveSchedule; window.saveDates=saveDates; window.renderScheduleTotalsWithDates=renderScheduleTotalsWithDates;
 window.updateWhatIf=updateWhatIf; window.recalcWhatIf=recalcWhatIf;
 window.handleXlsxDrop=handleXlsxDrop; window.handleXlsxFile=handleXlsxFile;
 window.importBillBook=importBillBook; window.clearBillBook=clearBillBook; window.cancelUpload=cancelUpload;
