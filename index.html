@@ -1472,7 +1472,7 @@ Provide: (1) projected end time with day and specific time, (2) which pending bi
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
       body: JSON.stringify({
-        model: 'llama3-8b-8192',
+        model: 'llama-3.1-8b-instant',
         messages: [{role:'user', content: prompt}],
         max_tokens: 600,
         temperature: 0.7
