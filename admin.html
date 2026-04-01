@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
@@ -10,19 +11,20 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+  // ⚠️ REPLACE THIS with your NEW Firebase project config (see setup guide)
   const firebaseConfig = {
-    apiKey: "AIzaSyAZ12ICZLfkjEr15h6GzpXeBZ78-Mr0188",
-    authDomain: "tigers-4f98d.firebaseapp.com",
-    databaseURL: "https://tigers-4f98d-default-rtdb.firebaseio.com",
-    projectId: "tigers-4f98d",
-    storageBucket: "tigers-4f98d.appspot.com",
-    messagingSenderId: "placeholder",
-    appId: "placeholder"
+     apiKey: "AIzaSyCGWmE_7Ro1ItkywmeUl9NkczfVX9YgdDc",
+    authDomain: "scsl-tracker-2026.firebaseapp.com",
+    databaseURL: "https://scsl-tracker-2026-default-rtdb.firebaseio.com",
+    projectId: "scsl-tracker-2026",
+    storageBucket: "scsl-tracker-2026.firebasestorage.app",
+    messagingSenderId: "883777937178",
+    appId: "1:883777937178:web:f9dfc6e0c60b33548f96a3",
+    measurementId: "G-43MEW7YF44"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
-
   window._db = db;
   window._ref = ref;
   window._onValue = onValue;
@@ -33,9 +35,9 @@
 </script>
 <style>
 :root {
-  --maroon: #321f20;
-  --maroon-light: #4a2d2e;
-  --maroon-dark: #1e1213;
+  --navy-black: #0e1520;
+  --navy-black-light: #1a2436;
+  --navy-black-dark: #080d14;
   --navy: #0d1b2a;
   --navy-mid: #1b2e45;
   --navy-light: #243c56;
@@ -53,26 +55,14 @@
   --font-mono: 'JetBrains Mono', monospace;
 }
 [data-theme="dark"] {
-  --bg: #0a0f14;
-  --bg2: #111820;
-  --bg3: #192130;
-  --surface: #1a2535;
-  --surface2: #243040;
-  --border: #2d3f55;
-  --text: #e8f0fa;
-  --text2: #a0b4cc;
-  --text3: #607080;
+  --bg: #0a0f14; --bg2: #111820; --bg3: #192130;
+  --surface: #1a2535; --surface2: #243040; --border: #2d3f55;
+  --text: #e8f0fa; --text2: #a0b4cc; --text3: #607080;
 }
 [data-theme="light"] {
-  --bg: #f0f4f8;
-  --bg2: #e4ecf4;
-  --bg3: #d8e4f0;
-  --surface: #ffffff;
-  --surface2: #f0f6fc;
-  --border: #c4d4e4;
-  --text: #0d1b2a;
-  --text2: #3a5070;
-  --text3: #6888a0;
+  --bg: #f0f4f8; --bg2: #e4ecf4; --bg3: #d8e4f0;
+  --surface: #ffffff; --surface2: #f0f6fc; --border: #c4d4e4;
+  --text: #0d1b2a; --text2: #3a5070; --text3: #6888a0;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; }
@@ -80,297 +70,222 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 /* LOGIN */
 #loginScreen {
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(ellipse at center, var(--maroon-dark) 0%, var(--bg) 70%);
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at center, var(--navy-black-light) 0%, var(--bg) 70%);
 }
 .login-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-top: 3px solid var(--sky);
   border-radius: 16px;
-  padding: 40px;
-  width: 100%;
-  max-width: 380px;
-  text-align: center;
+  padding: 40px; width: 100%; max-width: 380px; text-align: center;
 }
-.login-logo {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 2rem;
-  letter-spacing: 0.1em;
-  color: var(--white);
-  margin-bottom: 4px;
-}
+.login-logo { font-family: var(--font-display); font-weight: 900; font-size: 2rem; letter-spacing: 0.1em; color: var(--white); margin-bottom: 4px; }
 .login-logo span { color: var(--sky); }
-.login-sub { color: var(--text3); font-size: 0.85rem; margin-bottom: 28px; font-family: var(--font-mono); }
+.login-sub { color: var(--text3); font-size: 0.83rem; margin-bottom: 28px; font-family: var(--font-mono); }
 .input-group { margin-bottom: 16px; text-align: left; }
-.input-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; margin-bottom: 6px; font-family: var(--font-mono); display: block; }
+.input-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; margin-bottom: 6px; font-family: var(--font-mono); display: block; }
 .text-input {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 14px;
-  color: var(--text);
-  font-size: 0.9rem;
-  font-family: var(--font-body);
-  transition: border-color 0.2s;
+  width: 100%; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 14px; color: var(--text);
+  font-size: 0.88rem; font-family: var(--font-body); transition: border-color 0.2s;
 }
 .text-input:focus { outline: none; border-color: var(--sky); }
 .btn-primary {
   width: 100%;
-  background: linear-gradient(135deg, var(--maroon), var(--sky-dark));
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 12px;
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  font-family: var(--font-display);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--navy-black), var(--sky-dark));
+  color: white; border: none; border-radius: 8px; padding: 12px;
+  font-weight: 700; font-size: 1rem; cursor: pointer;
+  font-family: var(--font-display); letter-spacing: 0.08em; text-transform: uppercase;
   transition: all 0.2s;
 }
 .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-.login-error { color: var(--red); font-size: 0.82rem; margin-top: 8px; font-family: var(--font-mono); }
+.login-error { color: var(--red); font-size: 0.8rem; margin-top: 8px; font-family: var(--font-mono); }
 
 /* HEADER */
 .site-header {
-  background: var(--maroon);
+  background: var(--navy-black);
   border-bottom: 3px solid var(--sky-dark);
   padding: 0 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 64px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px; position: sticky; top: 0; z-index: 200;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
-.site-header h1 {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 1.6rem;
-  letter-spacing: 0.08em;
-  color: var(--white);
-  text-transform: uppercase;
-}
+.site-header h1 { font-family: var(--font-display); font-weight: 900; font-size: 1.6rem; letter-spacing: 0.08em; color: var(--white); text-transform: uppercase; }
 .site-header h1 span { color: var(--sky); }
 .header-actions { display: flex; gap: 12px; align-items: center; }
 .admin-badge {
-  background: rgba(240,192,96,0.15);
-  border: 1px solid rgba(240,192,96,0.3);
-  color: var(--gold);
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  letter-spacing: 0.08em;
+  background: rgba(240,192,96,0.15); border: 1px solid rgba(240,192,96,0.3);
+  color: var(--gold); padding: 4px 12px; border-radius: 20px;
+  font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono); letter-spacing: 0.08em;
 }
 .btn-icon {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
-  color: white;
-  width: 36px; height: 36px;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1rem;
-  transition: all 0.2s;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  color: white; width: 36px; height: 36px; border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.2s;
 }
-.btn-icon:hover { background: rgba(255,255,255,0.2); }
+.btn-icon:hover { background: rgba(255,255,255,0.18); }
 
 /* TABS */
 .tabs {
-  display: flex;
-  gap: 0;
-  border-bottom: 2px solid var(--border);
-  padding: 0 20px;
-  background: var(--surface);
-  overflow-x: auto;
+  display: flex; gap: 0; border-bottom: 2px solid var(--border);
+  padding: 0 20px; background: var(--surface);
+  overflow-x: auto; position: sticky; top: 64px; z-index: 150;
 }
 .tab-btn {
-  padding: 14px 20px;
-  border: none;
-  background: none;
-  color: var(--text3);
-  font-weight: 600;
-  font-size: 0.85rem;
-  cursor: pointer;
-  font-family: var(--font-body);
-  border-bottom: 3px solid transparent;
-  margin-bottom: -2px;
-  transition: all 0.2s;
-  white-space: nowrap;
+  padding: 13px 18px; border: none; background: none; color: var(--text3);
+  font-weight: 600; font-size: 0.83rem; cursor: pointer; font-family: var(--font-body);
+  border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; white-space: nowrap;
 }
 .tab-btn.active { color: var(--sky); border-bottom-color: var(--sky); }
 .tab-btn:hover { color: var(--text); }
 
 /* MAIN */
-.container { max-width: 1200px; margin: 0 auto; padding: 24px 20px; }
+.container { max-width: 1300px; margin: 0 auto; padding: 22px 18px; }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
 
-/* SECTION */
-.section-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  overflow: hidden;
-  margin-bottom: 20px;
-}
+/* SECTION CARD */
+.section-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 18px; }
 .card-header {
-  background: linear-gradient(135deg, var(--maroon), var(--maroon-dark));
-  padding: 14px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  background: linear-gradient(135deg, var(--navy-black), var(--navy-black-light));
+  padding: 13px 18px; display: flex; align-items: center; justify-content: space-between;
 }
-.card-title {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.1rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--white);
-}
-.card-body { padding: 20px; }
+.card-title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--white); }
+.card-body { padding: 18px; }
 
-/* BILL STATUS TABLE */
-.admin-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+/* CURRENT BILL BANNER */
+.current-bill-banner {
+  background: linear-gradient(135deg, rgba(251,146,60,0.15), rgba(251,146,60,0.05));
+  border: 1px solid rgba(251,146,60,0.4);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  display: none;
+  align-items: center;
+  gap: 14px;
+}
+.floor-timer {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--orange);
+  min-width: 70px;
+}
+.current-bill-name { font-weight: 600; color: var(--text); font-size: 0.9rem; flex: 1; }
+
+/* ADMIN TABLE */
+/* Fix: use border-collapse and proper thead positioning */
+.table-outer-admin {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  /* Don't use overflow:auto here — we handle it on the inner scroll div */
+}
+.table-scroll-admin { overflow-x: auto; max-height: 70vh; overflow-y: auto; }
+.admin-table { width: 100%; border-collapse: collapse; }
+.admin-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 20; /* above rows, below tabs */
+}
 .admin-table th {
-  background: var(--navy-mid);
+  background: var(--navy-black);
   color: rgba(255,255,255,0.7);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.67rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 10px 12px;
+  padding: 10px 11px;
   text-align: left;
-  position: sticky;
-  top: 64px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
 }
 .admin-table td {
-  padding: 8px 12px;
+  padding: 7px 11px;
   border-bottom: 1px solid var(--border);
-  font-size: 0.83rem;
+  font-size: 0.82rem;
   vertical-align: middle;
 }
 .admin-table tr:last-child td { border-bottom: none; }
 .admin-table tr { background: var(--surface); transition: background 0.15s; }
 .admin-table tr:hover td { background: var(--surface2); }
-.admin-table tr.current-row td { background: rgba(251,146,60,0.08); }
+.admin-table tr.current-row td { background: rgba(251,146,60,0.07); }
 .bill-num { font-family: var(--font-mono); font-weight: 600; color: var(--sky); }
-.bill-topic-short { color: var(--text2); font-size: 0.78rem; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bill-topic-short { color: var(--text2); font-size: 0.77rem; max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hotness-indicator { display: flex; gap: 2px; }
 .hd { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
 .hd.filled { background: var(--orange); }
 .hd.filled.hi { background: var(--red); }
 
 /* STATUS BUTTONS */
-.status-btns { display: flex; gap: 4px; flex-wrap: wrap; }
+.status-btns { display: flex; gap: 3px; flex-wrap: wrap; }
 .sbtn {
-  padding: 3px 10px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: var(--surface2);
-  color: var(--text3);
-  font-size: 0.7rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: var(--font-mono);
-  transition: all 0.15s;
-  white-space: nowrap;
+  padding: 3px 9px; border-radius: 5px; border: 1px solid var(--border);
+  background: var(--surface2); color: var(--text3); font-size: 0.68rem; font-weight: 600;
+  cursor: pointer; font-family: var(--font-mono); transition: all 0.15s; white-space: nowrap;
 }
 .sbtn:hover { background: var(--navy-mid); color: var(--text); }
-.sbtn.active-current { background: rgba(251,146,60,0.2); color: var(--orange); border-color: var(--orange); }
+.sbtn.active-pending { background: rgba(77,184,232,0.15); color: var(--sky); border-color: var(--sky); }
+.sbtn.active-in-progress { background: rgba(251,146,60,0.2); color: var(--orange); border-color: var(--orange); }
 .sbtn.active-passed { background: rgba(74,222,128,0.2); color: var(--green); border-color: var(--green); }
 .sbtn.active-failed { background: rgba(248,113,113,0.2); color: var(--red); border-color: var(--red); }
 .sbtn.active-tabled { background: rgba(240,192,96,0.2); color: var(--gold); border-color: var(--gold); }
-.sbtn.active-pending { background: rgba(77,184,232,0.15); color: var(--sky); border-color: var(--sky); }
+.sbtn.active-tabled-indefinitely { background: rgba(148,163,184,0.2); color: var(--muted); border-color: var(--muted); }
 
-/* MINUTE INPUT */
+/* INPUTS */
 .min-input {
-  width: 65px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 4px 8px;
-  color: var(--text);
-  font-size: 0.8rem;
-  font-family: var(--font-mono);
-  text-align: center;
+  width: 62px; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 5px; padding: 4px 7px; color: var(--text);
+  font-size: 0.79rem; font-family: var(--font-mono); text-align: center;
 }
 .min-input:focus { outline: none; border-color: var(--sky); }
+.time-edit-input {
+  width: 80px; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 5px; padding: 4px 7px; color: var(--text);
+  font-size: 0.79rem; font-family: var(--font-mono); text-align: center;
+}
+.time-edit-input:focus { outline: none; border-color: var(--sky); }
 
 /* SCHEDULE EDITOR */
-.schedule-editor { display: flex; flex-direction: column; gap: 12px; }
+.schedule-editor { display: flex; flex-direction: column; gap: 10px; }
 .sched-row {
   display: grid;
-  grid-template-columns: 100px 1fr auto auto auto;
-  gap: 12px;
-  align-items: center;
-  padding: 12px 16px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  grid-template-columns: 120px 1fr auto auto auto;
+  gap: 10px; align-items: center;
+  padding: 11px 14px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 8px;
 }
-.sched-label { font-family: var(--font-mono); font-size: 0.8rem; color: var(--sky); font-weight: 600; }
+.sched-label { font-family: var(--font-mono); font-size: 0.79rem; color: var(--sky); font-weight: 600; }
 .time-input {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 6px 10px;
-  color: var(--text);
-  font-size: 0.85rem;
-  font-family: var(--font-mono);
-  width: 90px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 5px; padding: 6px 9px; color: var(--text);
+  font-size: 0.83rem; font-family: var(--font-mono); width: 88px;
 }
 .time-input:focus { outline: none; border-color: var(--sky); }
-.sched-dur { font-family: var(--font-mono); font-size: 0.8rem; color: var(--gold); min-width: 60px; }
+.sched-dur { font-family: var(--font-mono); font-size: 0.79rem; color: var(--gold); min-width: 56px; }
 
-/* WHAT-IF PANEL */
+/* WHAT-IF */
 .whatif-panel {
-  background: var(--navy-mid);
-  border: 1px solid var(--navy-light);
-  border-radius: 10px;
-  padding: 16px;
-  margin-top: 16px;
+  background: var(--navy-mid); border: 1px solid var(--navy-light);
+  border-radius: 10px; padding: 16px; margin-top: 16px;
 }
-.whatif-result { font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--sky); margin: 8px 0 4px; }
-.whatif-label { font-size: 0.72rem; color: var(--text3); font-family: var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.whatif-result { font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--sky); margin: 6px 0 3px; }
+.whatif-label { font-size: 0.7rem; color: var(--text3); font-family: var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
 
-/* SEARCH + FILTER */
-.admin-toolbar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
+/* TOOLBAR */
+.admin-toolbar { display: flex; gap: 10px; margin-bottom: 13px; flex-wrap: wrap; align-items: center; }
 .search-input {
-  flex: 1;
-  min-width: 200px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 14px;
-  color: var(--text);
-  font-size: 0.85rem;
-  font-family: var(--font-body);
+  flex: 1; min-width: 200px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 13px; color: var(--text); font-size: 0.83rem; font-family: var(--font-body);
 }
 .search-input:focus { outline: none; border-color: var(--sky); }
 .btn-sm {
-  padding: 7px 16px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--surface2);
-  color: var(--text2);
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: var(--font-body);
-  transition: all 0.2s;
+  padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--surface2); color: var(--text2); font-size: 0.79rem; font-weight: 600;
+  cursor: pointer; font-family: var(--font-body); transition: all 0.2s;
 }
 .btn-sm:hover { background: var(--navy-mid); color: var(--text); }
 .btn-sm.primary { background: var(--sky-dark); border-color: var(--sky); color: white; }
@@ -378,171 +293,135 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
 /* SAVE INDICATOR */
 .save-indicator {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--green);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  opacity: 0;
-  transition: opacity 0.3s;
+  font-family: var(--font-mono); font-size: 0.7rem; color: var(--green);
+  display: flex; align-items: center; gap: 4px; opacity: 0; transition: opacity 0.3s;
 }
 .save-indicator.show { opacity: 1; }
 
-/* STATS SUMMARY */
-.admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 16px; }
-.mini-stat {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 14px;
-  text-align: center;
-}
+/* STATS */
+.admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 9px; margin-bottom: 14px; }
+.mini-stat { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; text-align: center; }
 .mini-stat-val { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; color: var(--sky); }
-.mini-stat-label { font-size: 0.68rem; color: var(--text3); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; }
+.mini-stat-label { font-size: 0.67rem; color: var(--text3); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; }
 
 /* GOOGLE SHEETS */
-.sheets-form { display: grid; gap: 12px; }
 .sheets-status {
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 0.82rem;
-  font-family: var(--font-mono);
+  padding: 9px 13px; border-radius: 7px; font-size: 0.8rem; font-family: var(--font-mono);
+  margin-bottom: 12px;
 }
 .sheets-status.connected { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); color: var(--green); }
-.sheets-status.disconnected { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: var(--red); }
+.sheets-status.disconnected { background: rgba(251,146,60,0.1); border: 1px solid rgba(251,146,60,0.3); color: var(--orange); }
 
 /* TOAST */
 .toast {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--green);
-  border-radius: 10px;
-  padding: 12px 18px;
-  font-size: 0.85rem;
-  z-index: 1000;
+  position: fixed; bottom: 20px; right: 20px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 3px solid var(--sky); border-radius: 10px;
+  padding: 11px 16px; font-size: 0.83rem; z-index: 9999;
   box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-  opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.3s;
-  max-width: 300px;
+  opacity: 0; transform: translateY(10px); transition: all 0.3s; max-width: 320px;
 }
 .toast.show { opacity: 1; transform: translateY(0); }
-
-/* CURRENT BILL HIGHLIGHT */
-.current-bill-banner {
-  background: linear-gradient(135deg, rgba(251,146,60,0.15), rgba(251,146,60,0.05));
-  border: 1px solid rgba(251,146,60,0.4);
-  border-radius: 10px;
-  padding: 12px 16px;
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.85rem;
-}
-.current-bill-label { font-family: var(--font-mono); font-size: 0.7rem; color: var(--orange); letter-spacing: 0.1em; text-transform: uppercase; }
-.current-bill-name { font-weight: 600; color: var(--text); margin-top: 2px; }
-.timer-display { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 700; color: var(--orange); }
-
-@media (max-width: 700px) {
-  .sched-row { grid-template-columns: 1fr 1fr; }
-  .admin-table { font-size: 0.75rem; }
-}
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
+<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo">SCSL <span>Admin</span></div>
-    <div class="login-sub">Spring 2026 Session Tracker</div>
+    <div class="login-sub">Spring 2026 · Restricted Access</div>
     <div class="input-group">
-      <label class="input-label">Admin Password</label>
-      <input type="password" class="text-input" id="passwordInput" placeholder="Enter password…" onkeydown="if(event.key==='Enter')login()">
+      <label class="input-label">Password</label>
+      <input type="password" class="text-input" id="passwordInput" placeholder="Enter admin password…" onkeydown="if(event.key==='Enter')login()">
     </div>
     <button class="btn-primary" onclick="login()">Access Admin Panel</button>
     <div class="login-error" id="loginError"></div>
+    <div style="margin-top:16px;font-size:0.72rem;color:var(--text3);font-family:var(--font-mono)">Default password: <strong style="color:var(--gold)">tigers</strong></div>
   </div>
 </div>
 
-<!-- MAIN APP (hidden until login) -->
+<!-- MAIN APP -->
 <div id="mainApp" style="display:none">
+
   <header class="site-header">
     <h1>SCSL <span>Admin</span></h1>
     <div class="header-actions">
-      <span class="admin-badge">⚙ ADMIN</span>
+      <div class="admin-badge">🔐 ADMIN</div>
       <div class="save-indicator" id="saveIndicator">✓ Saved</div>
       <button class="btn-icon" onclick="toggleTheme()" title="Toggle theme">🌓</button>
       <a href="index.html" style="text-decoration:none">
-        <button class="btn-icon" title="View public page">👁</button>
+        <button class="btn-icon" title="Back to public view">👁</button>
       </a>
     </div>
   </header>
 
-  <div class="tabs">
+  <nav class="tabs">
     <button class="tab-btn active" onclick="switchTab('docket',this)">📋 Docket</button>
     <button class="tab-btn" onclick="switchTab('schedule',this)">🗓 Schedule</button>
     <button class="tab-btn" onclick="switchTab('whatif',this)">🔮 What-If</button>
     <button class="tab-btn" onclick="switchTab('settings',this)">⚙️ Settings</button>
-  </div>
+    <button class="tab-btn" onclick="switchTab('help',this)">📖 Help</button>
+  </nav>
 
   <div class="container">
 
     <!-- DOCKET TAB -->
     <div id="tab-docket" class="tab-panel active">
-      <div class="admin-stats" id="adminStats"></div>
 
-      <div id="currentBillBanner" style="display:none" class="current-bill-banner">
+      <!-- Current Bill Banner -->
+      <div class="current-bill-banner" id="currentBillBanner">
         <div>
-          <div class="current-bill-label">🔴 Currently on Floor</div>
+          <div style="font-size:0.67rem;color:var(--orange);font-family:var(--font-mono);letter-spacing:0.1em">🔴 ON FLOOR</div>
           <div class="current-bill-name" id="currentBillName">—</div>
         </div>
-        <div>
-          <div class="timer-display" id="floorTimer">0:00</div>
-          <div style="font-size:0.7rem;color:var(--text3);text-align:center;font-family:var(--font-mono)">floor time</div>
+        <div style="text-align:center">
+          <div style="font-size:0.67rem;color:var(--text3);font-family:var(--font-mono)">ELAPSED</div>
+          <div class="floor-timer" id="floorTimer">0:00</div>
         </div>
       </div>
 
-      <div class="section-card">
-        <div class="card-header">
-          <span class="card-title">Bill Status Tracker</span>
-          <span style="font-size:0.72rem;color:rgba(255,255,255,0.5);font-family:var(--font-mono)">78 BILLS</span>
+      <!-- Stats -->
+      <div id="adminStats" class="admin-stats"></div>
+
+      <!-- Toolbar -->
+      <div class="admin-toolbar">
+        <input type="text" class="search-input" id="adminSearch" placeholder="Search bill number, topic, author, school…" oninput="adminFilter()">
+        <select class="search-input" id="adminFilterStatus" onchange="adminFilter()" style="flex:0;min-width:150px;cursor:pointer">
+          <option value="all">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="in-progress">🔴 On Floor</option>
+          <option value="passed">✅ Passed</option>
+          <option value="failed">❌ Failed</option>
+          <option value="tabled">⏸ Tabled</option>
+          <option value="tabled-indefinitely">🚫 Tabled Indefinitely</option>
+        </select>
+      </div>
+
+      <!-- Admin Docket Table — fixed header overlap -->
+      <div class="table-outer-admin">
+        <div class="table-scroll-admin">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Author / School</th>
+                <th>Purpose / Topic</th>
+                <th>Heat</th>
+                <th>Status</th>
+                <th>Vote</th>
+                <th>Min</th>
+                <th>Start</th>
+                <th>End</th>
+              </tr>
+            </thead>
+            <tbody id="adminDocketBody"></tbody>
+          </table>
         </div>
-        <div class="card-body" style="padding:12px">
-          <div class="admin-toolbar">
-            <input type="text" class="search-input" id="adminSearch" placeholder="Search by number, topic, author, school…" oninput="adminFilter()">
-            <select id="adminFilterStatus" class="btn-sm" onchange="adminFilter()" style="height:36px">
-              <option value="all">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="current">On Floor</option>
-              <option value="passed">Passed</option>
-              <option value="failed">Failed</option>
-              <option value="tabled">Tabled</option>
-            </select>
-            <button class="btn-sm danger" onclick="confirmReset()">↺ Reset All</button>
-          </div>
-          <div style="overflow-x:auto">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Author / School</th>
-                  <th>Topic</th>
-                  <th>Heat</th>
-                  <th>Status</th>
-                  <th>Min</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="adminDocketBody"></tbody>
-            </table>
-          </div>
-        </div>
+      </div>
+
+      <div style="margin-top:10px;font-size:0.72rem;color:var(--text3);font-family:var(--font-mono)">
+        📝 Tip: Use the <strong>Start</strong> and <strong>End</strong> time fields to manually record or correct floor times. Minutes auto-calculate.
       </div>
     </div>
 
@@ -551,23 +430,23 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="section-card">
         <div class="card-header">
           <span class="card-title">🗓 Floor Schedule Editor</span>
-          <button class="btn-sm primary" onclick="saveSchedule()">Save Schedule</button>
+          <button class="btn-sm primary" onclick="saveSchedule()">Save to Firebase</button>
         </div>
         <div class="card-body">
-          <p style="font-size:0.82rem;color:var(--text3);margin-bottom:16px;font-family:var(--font-mono)">
-            Edit start/end times for each floor session. Changes instantly recalculate projections.
+          <p style="font-size:0.8rem;color:var(--text3);margin-bottom:14px;font-family:var(--font-mono)">
+            Adjust start/end times for each floor session. Changes instantly recalculate all projections and update for all viewers.
           </p>
           <div class="schedule-editor" id="scheduleEditor"></div>
-          <div style="margin-top:16px;padding:12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
-            <div style="font-size:0.7rem;color:var(--text3);font-family:var(--font-mono);margin-bottom:6px">TOTAL FLOOR TIME</div>
+          <div style="margin-top:14px;padding:12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+            <div style="font-size:0.67rem;color:var(--text3);font-family:var(--font-mono);margin-bottom:6px">TOTALS</div>
             <div style="display:flex;gap:20px">
               <div>
                 <div style="font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--sky)" id="totalFloorTime">—</div>
-                <div style="font-size:0.75rem;color:var(--text3)">hours scheduled</div>
+                <div style="font-size:0.73rem;color:var(--text3)">hours scheduled</div>
               </div>
               <div>
                 <div style="font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--gold)" id="billCapacity">—</div>
-                <div style="font-size:0.75rem;color:var(--text3)">bills at 12 min avg</div>
+                <div style="font-size:0.73rem;color:var(--text3)">bills at 12 min avg</div>
               </div>
             </div>
           </div>
@@ -582,29 +461,26 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
           <span class="card-title">🔮 What-If Scenario Planner</span>
         </div>
         <div class="card-body">
-          <p style="font-size:0.85rem;color:var(--text2);margin-bottom:20px;line-height:1.6">
-            Adjust the scenario parameters below to see how schedule changes affect the projected end time without changing the live schedule.
+          <p style="font-size:0.83rem;color:var(--text2);margin-bottom:18px;line-height:1.6">
+            Adjust scenario parameters to see how schedule changes affect the projected end time — without affecting the live schedule.
           </p>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
             <div>
-              <label class="input-label" style="display:block;font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;margin-bottom:6px;font-family:var(--font-mono)">Avg Minutes Per Bill</label>
-              <input type="number" class="text-input" id="wiAvgMin" value="12" min="5" max="45" oninput="recalcWhatIf()" style="width:100%">
+              <label class="input-label" style="display:block;font-size:0.68rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;font-family:var(--font-mono)">Avg Minutes Per Bill</label>
+              <input type="number" class="text-input" id="wiAvgMin" value="12" min="5" max="45" oninput="recalcWhatIf()">
             </div>
             <div>
-              <label class="input-label" style="display:block;font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;margin-bottom:6px;font-family:var(--font-mono)">Bills Remaining</label>
-              <input type="number" class="text-input" id="wiBillsLeft" value="78" min="0" max="78" oninput="recalcWhatIf()" style="width:100%">
+              <label class="input-label" style="display:block;font-size:0.68rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;font-family:var(--font-mono)">Bills Remaining</label>
+              <input type="number" class="text-input" id="wiBillsLeft" value="78" min="0" max="78" oninput="recalcWhatIf()">
             </div>
           </div>
-
-          <p style="font-size:0.8rem;color:var(--text3);margin-bottom:14px;font-family:var(--font-mono)">ADJUST SCENARIO SCHEDULE (does not affect live schedule):</p>
+          <p style="font-size:0.79rem;color:var(--text3);margin-bottom:12px;font-family:var(--font-mono)">ADJUST SCENARIO SCHEDULE (does not affect live schedule):</p>
           <div id="whatIfScheduleEditor"></div>
-
-          <div class="whatif-panel" id="whatifResult">
+          <div class="whatif-panel">
             <div class="whatif-label">Scenario Projected End</div>
             <div class="whatif-result" id="wiEndTime">—</div>
-            <div style="font-size:0.85rem;color:var(--text2)" id="wiEndDay">Adjust parameters above</div>
-            <div style="margin-top:12px;font-size:0.8rem;color:var(--text3);font-family:var(--font-mono)" id="wiDetails"></div>
+            <div style="font-size:0.83rem;color:var(--text2)" id="wiEndDay">Adjust parameters above</div>
+            <div style="margin-top:10px;font-size:0.79rem;color:var(--text3);font-family:var(--font-mono)" id="wiDetails"></div>
           </div>
         </div>
       </div>
@@ -616,38 +492,42 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
         <div class="card-header"><span class="card-title">⚙️ API & Integration Settings</span></div>
         <div class="card-body">
           <div style="display:grid;gap:16px">
+
             <div>
-              <label class="input-label" style="display:block;font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;margin-bottom:6px;font-family:var(--font-mono)">Groq API Key</label>
+              <label class="input-label" style="display:block;font-size:0.68rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;font-family:var(--font-mono)">Groq API Key (for AI Analyst)</label>
               <div style="display:flex;gap:8px">
                 <input type="password" class="text-input" id="groqKeyInput" placeholder="gsk_…" style="flex:1">
                 <button class="btn-sm primary" onclick="saveGroqKey()">Save</button>
               </div>
-              <p style="font-size:0.75rem;color:var(--text3);margin-top:6px">Get a free key at <a href="https://console.groq.com" target="_blank" style="color:var(--sky)">console.groq.com</a>. Stored securely in Firebase, not in code.</p>
+              <p style="font-size:0.73rem;color:var(--text3);margin-top:5px">Get a free key at <a href="https://console.groq.com" target="_blank" style="color:var(--sky)">console.groq.com</a>. Stored in Firebase — never visible in page source.</p>
             </div>
 
             <div>
-              <label class="input-label" style="display:block;font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;margin-bottom:6px;font-family:var(--font-mono)">Admin Password</label>
+              <label class="input-label" style="display:block;font-size:0.68rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;font-family:var(--font-mono)">Admin Password</label>
               <div style="display:flex;gap:8px">
                 <input type="password" class="text-input" id="newPwInput" placeholder="New password…" style="flex:1">
                 <button class="btn-sm primary" onclick="savePassword()">Update</button>
               </div>
+              <p style="font-size:0.73rem;color:var(--text3);margin-top:4px">Stored locally in browser. Default: <code style="color:var(--gold)">tigers</code></p>
             </div>
 
-            <div style="border-top:1px solid var(--border);padding-top:16px">
-              <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;font-family:var(--font-mono);margin-bottom:12px">Google Sheets Integration (Optional)</div>
+            <div style="border-top:1px solid var(--border);padding-top:14px">
+              <div style="font-size:0.68rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;font-family:var(--font-mono);margin-bottom:10px">Google Sheets Integration</div>
               <div class="sheets-status disconnected" id="sheetsStatus">⚠ Not configured — using manual entry mode</div>
-              <div style="margin-top:12px;display:grid;gap:10px" class="sheets-form">
-                <input type="text" class="text-input" id="sheetsUrlInput" placeholder="Google Sheets published CSV URL (File → Share → Publish to web → CSV)">
-                <button class="btn-sm primary" onclick="connectSheets()">Connect Google Sheets</button>
-                <p style="font-size:0.75rem;color:var(--text3)">
-                  In Google Sheets: File → Share → Publish to web → Choose your sheet → CSV format → Copy link<br>
-                  Expected columns: Bill#, Status (pending/passed/failed/tabled), Minutes
+              <div style="margin-top:10px;display:grid;gap:9px">
+                <input type="text" class="text-input" id="sheetsUrlInput" placeholder="Google Sheets published CSV URL">
+                <button class="btn-sm primary" onclick="connectSheets()">Connect & Sync Google Sheets</button>
+                <p style="font-size:0.73rem;color:var(--text3);line-height:1.6">
+                  In Google Sheets: <strong>File → Share → Publish to web → Choose sheet → CSV → Copy link</strong><br>
+                  Expected column headers (exact): <code style="color:var(--sky)">Bill No. / Bill Author / Delegation / Purpose Statement / Status / Vote Count / Executive action</code><br>
+                  Status values: <code style="color:var(--sky)">passed / failed / tabled / tabled indefinitely / In progress</code>
                 </p>
+                <button class="btn-sm" onclick="syncSheets()" id="syncSheetsBtn" style="display:none">🔄 Re-sync Now</button>
               </div>
             </div>
 
-            <div style="border-top:1px solid var(--border);padding-top:16px">
-              <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;font-family:var(--font-mono);margin-bottom:12px">Danger Zone</div>
+            <div style="border-top:1px solid var(--border);padding-top:14px">
+              <div style="font-size:0.68rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;font-family:var(--font-mono);margin-bottom:10px">Danger Zone</div>
               <div style="display:flex;gap:10px;flex-wrap:wrap">
                 <button class="btn-sm danger" onclick="confirmReset()">Reset All Bill Statuses</button>
                 <button class="btn-sm danger" onclick="clearHistory()">Clear End Time History</button>
@@ -658,12 +538,79 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       </div>
 
       <div class="section-card">
-        <div class="card-header"><span class="card-title">📋 Session Notes</span></div>
+        <div class="card-header"><span class="card-title">📋 Session Notes (shown on public page)</span></div>
         <div class="card-body">
-          <textarea class="text-input" id="sessionNotes" rows="6" placeholder="Add session notes, announcements, or context here…" style="width:100%;resize:vertical;line-height:1.6"></textarea>
+          <textarea class="text-input" id="sessionNotes" rows="6" placeholder="Add notes, announcements, or context…" style="width:100%;resize:vertical;line-height:1.6"></textarea>
           <div style="margin-top:10px;display:flex;justify-content:flex-end">
             <button class="btn-sm primary" onclick="saveNotes()">Save Notes</button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HELP TAB -->
+    <div id="tab-help" class="tab-panel">
+      <div class="section-card">
+        <div class="card-header"><span class="card-title">📖 Setup & Usage Guide</span></div>
+        <div class="card-body" style="line-height:1.8;font-size:0.88rem;color:var(--text2)">
+
+          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.2rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:12px">🔥 Step 1 — Create a New Firebase Project</h3>
+          <ol style="padding-left:20px;margin-bottom:20px">
+            <li>Go to <a href="https://console.firebase.google.com" target="_blank" style="color:var(--sky)">console.firebase.google.com</a> and click <strong>Add Project</strong></li>
+            <li>Name it something like <strong>scsl-tracker-2026</strong> → Disable Google Analytics → Create Project</li>
+            <li>Once created, click <strong>Build → Realtime Database → Create Database</strong></li>
+            <li>Choose any location → Start in <strong>test mode</strong> → Enable</li>
+            <li>In Realtime Database → <strong>Rules</strong> tab, set rules to:<br>
+              <code style="background:var(--surface2);padding:8px 12px;border-radius:6px;display:block;margin-top:8px;font-size:0.8rem;color:var(--sky)">{ "rules": { "scsl": { ".read": true, ".write": true } } }</code>
+            </li>
+            <li>Go back to Project Overview → Click the web icon (&lt;/&gt;) → Register app → Get your config object</li>
+            <li>Replace the <code style="color:var(--gold)">REPLACE_WITH_YOUR_...</code> placeholders in BOTH <strong>index.html</strong> and <strong>admin.html</strong> with your real Firebase config values</li>
+          </ol>
+
+          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.2rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:12px">🌐 Step 2 — Deploy to GitHub Pages</h3>
+          <ol style="padding-left:20px;margin-bottom:20px">
+            <li>Go to <a href="https://github.com" target="_blank" style="color:var(--sky)">github.com</a> → New repository → name it <strong>scsl-tracker</strong> → Public → Create</li>
+            <li>Upload both files. Rename: <code>scsl_index.html → index.html</code> and <code>scsl_admin.html → admin.html</code></li>
+            <li>Go to <strong>Settings → Pages → Source: Deploy from branch → main → / (root) → Save</strong></li>
+            <li>Your URLs: <code style="color:var(--gold)">yourusername.github.io/scsl-tracker</code> (public) and <code style="color:var(--gold)">yourusername.github.io/scsl-tracker/admin.html</code> (admin)</li>
+          </ol>
+
+          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.2rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:12px">🤖 Step 3 — Set Up Groq AI (Free)</h3>
+          <ol style="padding-left:20px;margin-bottom:20px">
+            <li>Go to <a href="https://console.groq.com" target="_blank" style="color:var(--sky)">console.groq.com</a> → Sign up (free, no credit card)</li>
+            <li>Create an API key</li>
+            <li>Come to <strong>Admin → Settings → Groq API Key → Paste → Save</strong></li>
+            <li>The key is stored in Firebase — it never appears in your GitHub code</li>
+          </ol>
+
+          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.2rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:12px">📊 Step 4 — Connect Google Sheets (Optional but Recommended)</h3>
+          <ol style="padding-left:20px;margin-bottom:20px">
+            <li>Open your SCSL docket Google Sheet</li>
+            <li>Make sure column headers are exactly: <code style="color:var(--sky)">Bill No. / Bill Author / Delegation / Purpose Statement / Status / Vote Count / Executive action</code></li>
+            <li><strong>File → Share → Publish to web → choose your sheet tab → CSV format → Publish → Copy link</strong></li>
+            <li>Go to <strong>Admin → Settings → Google Sheets → paste URL → Connect</strong></li>
+            <li>Status values that sync: <code style="color:var(--sky)">passed / failed / tabled / tabled indefinitely / In progress</code></li>
+            <li>Re-sync anytime by clicking <strong>Re-sync Now</strong></li>
+          </ol>
+
+          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.2rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:12px">🏛️ Using During Session</h3>
+          <ul style="padding-left:20px;margin-bottom:20px">
+            <li><strong>Mark a bill "🔴 On Floor"</strong> when it comes up — floor timer starts automatically</li>
+            <li><strong>Enter minutes manually</strong> in the Min field, or use the Start/End time columns for precise timing</li>
+            <li><strong>Mark Passed / Failed / Tabled</strong> when done — projection updates instantly for everyone</li>
+            <li><strong>Tabled</strong> = bill will return later (counts ~50% time remaining). <strong>Tabled Indefinitely</strong> = won't return (excluded from projection)</li>
+            <li>The <strong>public index.html</strong> updates in real-time for all viewers — share that URL with everyone in the room</li>
+            <li>The <strong>Statistical Projection</strong> at the top of the public page is the primary display — the AI panel is supplemental</li>
+          </ul>
+
+          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.2rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:12px">🔐 Passwords & Security</h3>
+          <ul style="padding-left:20px">
+            <li>Default admin password: <code style="color:var(--gold)">tigers</code> — change in <strong>Settings → Admin Password</strong></li>
+            <li>Password is stored in your local browser — different devices each need to set it</li>
+            <li>Firebase rules are public read, but anyone who wants to write needs to know your Firebase project config — keep that private</li>
+            <li>Groq API key is stored encrypted in Firebase and never exposed in GitHub source code</li>
+          </ul>
+
         </div>
       </div>
     </div>
@@ -724,10 +671,10 @@ const BILLS = [
   {num:110,author:"Thatcher Hutton",school:"PC",topic:"Stricter guidelines for release of repeat violent offenders",hotness:3},
   {num:112,author:"Annika Rauhut",school:"Clemson",topic:"Regulate antidepressant prescriptions by GPs",hotness:3},
   {num:115,author:"Fiona Tworkowski",school:"Clemson",topic:"Require AI usage in all SC instructional facilities",hotness:4},
-  {num:117,author:"Charley Phy",school:"Clemson",topic:"Funeral homes report deaths to election commission",hotness:1},
-  {num:120,author:"James Pinner",school:"Clemson",topic:"Drivers 65+ retake driving test every 2 years",hotness:4},
-  {num:122,author:"Ellisen Berry",school:"Clemson",topic:"Restrict alcohol for extreme/repeat DUI offenders",hotness:3},
-  {num:127,author:"Matthew Langton",school:"Clemson",topic:"Allow public schools to adopt four-day school week",hotness:5},
+  {num:117,author:"Charley Phy",school:"Clemson",topic:"Allow funeral homes to report deaths to election commission",hotness:1},
+  {num:120,author:"James Pinner",school:"Clemson",topic:"Drivers 65+ must retake driving test every 2 years",hotness:4},
+  {num:122,author:"Ellisen Berry",school:"Clemson",topic:"Restrict alcohol purchase for extreme/repeat DUI offenders",hotness:3},
+  {num:127,author:"Matthew Langton",school:"Clemson",topic:"Allow public school districts to adopt four-day school week",hotness:5},
   {num:129,author:"Sarah Moorshead",school:"Clemson",topic:"Protect health and wellness of SC children",hotness:2},
   {num:132,author:"Sarah Herzberg",school:"Clemson",topic:"Free course materials access at public colleges",hotness:2},
   {num:134,author:"Grayson Alexander",school:"Clemson",topic:"Increase minimum wage annually based on inflation",hotness:4},
@@ -735,24 +682,24 @@ const BILLS = [
   {num:139,author:"Peter McLean",school:"Clemson",topic:"Separation of Church and State Act",hotness:5},
   {num:142,author:"Max Charles",school:"Clemson",topic:"Prohibit private equity from buying single-family homes",hotness:4},
   {num:144,author:"Walker Green",school:"Clemson",topic:"Protect SCSL executive committee structure",hotness:3},
-  {num:146,author:"Zoey Sapp",school:"Clemson",topic:"Guidelines on child age in custodial preference",hotness:2},
-  {num:148,author:"Brooke Kelly",school:"USC",topic:"Encourage responsible family planning (tax code)",hotness:4},
-  {num:153,author:"Chance Kirby",school:"USC",topic:"Create a South Carolina stable coin",hotness:4},
-  {num:159,author:"Clarissa Bues",school:"USC",topic:"Prohibit oil/gas drilling in national parks/refuges",hotness:4},
+  {num:146,author:"Zoey Sapp",school:"Clemson",topic:"Guidelines on child age weight in custodial preference",hotness:2},
+  {num:148,author:"Brooke Kelly",school:"USC",topic:"Encourage responsible family planning (tax code amendment)",hotness:4},
+  {num:153,author:"Chance Kirby",school:"USC",topic:"Create a South Carolina stable coin (cryptocurrency)",hotness:4},
+  {num:159,author:"Clarissa Bues",school:"USC",topic:"Prohibit oil/gas drilling in national wildlife refuges and parks",hotness:4},
   {num:161,author:"Derrick Wargo",school:"USC",topic:"Create a new legal holiday in SC",hotness:2},
-  {num:163,author:"Derrick Wargo & Brooke Kelly",school:"USC",topic:"Formalize SCSL session host site selection",hotness:2},
+  {num:163,author:"Derrick Wargo & Brooke Kelly",school:"USC",topic:"Formalize SCSL session host site selection process",hotness:2},
   {num:165,author:"Doug Ruff",school:"USC",topic:"Require boat/watercraft liability insurance",hotness:1},
-  {num:167,author:"Kaleelah El-Amin",school:"USC",topic:"Ensure children identified properly re: parentage",hotness:3},
+  {num:167,author:"Kaleelah El-Amin",school:"USC",topic:"Ensure children are identified properly re: parentage",hotness:3},
   {num:168,author:"Lara Glasser",school:"USC",topic:"Strengthen restrictions on shoreline armoring",hotness:2},
   {num:169,author:"Lester Lewis",school:"USC",topic:"Prohibit new tenure at public universities",hotness:5},
   {num:170,author:"Max Brabham",school:"USC",topic:"Improve and protect health of SC citizens",hotness:2},
   {num:172,author:"Meredyth Blake",school:"USC",topic:"Gardening as a high school course elective",hotness:1},
   {num:173,author:"Nailah Brown",school:"USC",topic:"Statewide literacy improvement for elementary schools",hotness:2},
-  {num:175,author:"Payton Ward",school:"USC",topic:"Require student ID to enter public college buildings",hotness:3},
+  {num:175,author:"Payton Ward",school:"USC",topic:"Require student ID to enter public college campus buildings",hotness:3},
   {num:177,author:"Reagan Quast",school:"USC",topic:"Provide cultural improvements through circuses",hotness:3},
   {num:178,author:"Ryan Young",school:"USC",topic:"Increase school immunization requirements",hotness:4},
   {num:180,author:"Sami Gunter",school:"USC",topic:"Reform drug possession laws / expand rehabilitation",hotness:4},
-  {num:182,author:"Tyler Morgan",school:"USC",topic:"Reform asset forfeiture process",hotness:3},
+  {num:182,author:"Tyler Morgan",school:"USC",topic:"Reform asset forfeiture process and requirements",hotness:3},
   {num:186,author:"Damien Barber",school:"USC",topic:"Establish motor vehicle safety standards in SC",hotness:2},
 ];
 
@@ -773,6 +720,7 @@ let adminFilterVal = 'all';
 let floorTimerStart = null;
 let floorTimerInterval = null;
 let currentBillNum = null;
+let savedSheetsUrl = '';
 
 // ==================== AUTH ====================
 const ADMIN_PW_KEY = 'scsl_admin_pw';
@@ -792,24 +740,19 @@ function savePassword() {
   const pw = document.getElementById('newPwInput').value.trim();
   if (!pw) return showToast('Password cannot be empty');
   localStorage.setItem(ADMIN_PW_KEY, pw);
-  showToast('Password updated');
+  showToast('Password updated (stored in this browser)');
   document.getElementById('newPwInput').value = '';
 }
 
 // ==================== FIREBASE ====================
 function initFirebase() {
   if (!window._firebaseReady) { document.addEventListener('firebaseReady', initFirebase); return; }
-  const db = window._db;
-  const ref = window._ref;
-  const onValue = window._onValue;
+  const db = window._db, ref = window._ref, onValue = window._onValue;
 
   onValue(ref(db, 'scsl/bills'), (snap) => {
     const data = snap.val();
-    if (data) { bills = data; }
-    else {
-      bills = {};
-      BILLS.forEach((b,i) => { bills[b.num] = {status:'pending', minutes:null, order:i}; });
-    }
+    if (data) bills = data;
+    else { bills = {}; BILLS.forEach((b,i) => { bills[b.num] = {status:'pending',minutes:null,order:i}; }); }
     renderAdminDocket();
     updateAdminStats();
     updateCurrentBillBanner();
@@ -820,25 +763,28 @@ function initFirebase() {
     if (data) { schedule = data; whatIfSchedule = JSON.parse(JSON.stringify(data)); }
     renderScheduleEditor();
     renderWhatIfEditor();
-    recalcWhatIf();
   });
 
   onValue(ref(db, 'scsl/config/groqKey'), (snap) => {
     if (snap.val()) document.getElementById('groqKeyInput').value = '••••••••••••••••';
   });
-
   onValue(ref(db, 'scsl/config/sessionNotes'), (snap) => {
     if (snap.val()) document.getElementById('sessionNotes').value = snap.val();
   });
+  onValue(ref(db, 'scsl/config/sheetsUrl'), (snap) => {
+    if (snap.val()) {
+      savedSheetsUrl = snap.val();
+      document.getElementById('sheetsUrlInput').value = snap.val();
+      document.getElementById('sheetsStatus').className = 'sheets-status connected';
+      document.getElementById('sheetsStatus').textContent = '✓ Google Sheets connected';
+      document.getElementById('syncSheetsBtn').style.display = 'block';
+    }
+  });
 }
 
-function saveBill(num, field, value) {
+function saveBill(num) {
   if (!window._firebaseReady) return;
-  const db = window._db;
-  const ref = window._ref;
-  const set = window._set;
-  if (!bills[num]) bills[num] = {status:'pending', minutes:null, order:0};
-  bills[num][field] = value;
+  const db = window._db, ref = window._ref, set = window._set;
   set(ref(db, `scsl/bills/${num}`), bills[num]);
   showSaveIndicator();
 }
@@ -853,7 +799,11 @@ function showSaveIndicator() {
 function renderAdminDocket() {
   const tbody = document.getElementById('adminDocketBody');
   let filtered = BILLS.map(b => ({...b, ...(bills[b.num]||{status:'pending',minutes:null})}));
-  if (adminFilterVal !== 'all') filtered = filtered.filter(b => b.status === adminFilterVal);
+
+  if (adminFilterVal !== 'all') filtered = filtered.filter(b => {
+    const s = normalizeStatus(b.status);
+    return s === adminFilterVal;
+  });
   if (adminSearchVal) {
     const q = adminSearchVal.toLowerCase();
     filtered = filtered.filter(b =>
@@ -865,45 +815,67 @@ function renderAdminDocket() {
   }
 
   tbody.innerHTML = filtered.map(b => {
+    const bData = bills[b.num] || {status:'pending',minutes:null};
+    const ns = normalizeStatus(bData.status);
     const dots = Array.from({length:5},(_,i)=>`<div class="hd${i<b.hotness?' filled'+(b.hotness>=4?' hi':''):''}"></div>`).join('');
-    const statuses = ['pending','current','passed','failed','tabled'];
-    const btnLabels = ['Pending','🔴 Floor','✅ Pass','❌ Fail','⏸ Table'];
-    const btns = statuses.map((s,i) => `<button class="sbtn${b.status===s?' active-'+s:''}" onclick="setBillStatus(${b.num},'${s}')">${btnLabels[i]}</button>`).join('');
-    const minVal = b.minutes || '';
-    return `<tr class="${b.status==='current'?'current-row':''}">
+
+    const statuses = ['pending','in-progress','passed','failed','tabled','tabled-indefinitely'];
+    const labels = ['Pending','🔴 Floor','✅ Pass','❌ Fail','⏸ Table','🚫 Indef.'];
+    const btns = statuses.map((s,i) => `<button class="sbtn${ns===s?' active-'+s:''}" onclick="setBillStatus(${b.num},'${s}')">${labels[i]}</button>`).join('');
+
+    const minVal = bData.minutes || '';
+    const startVal = bData.startTime || '';
+    const endVal = bData.endTime || '';
+    const voteVal = bData.voteCount || '';
+
+    return `<tr class="${ns==='in-progress'?'current-row':''}">
       <td><span class="bill-num">#${b.num}</span></td>
-      <td style="font-size:0.78rem"><div>${b.author}</div><div style="color:var(--text3);font-family:var(--font-mono);font-size:0.7rem">${b.school}</div></td>
+      <td style="font-size:0.77rem;white-space:nowrap"><div>${b.author}</div><div style="color:var(--text3);font-family:var(--font-mono);font-size:0.68rem">${b.school}</div></td>
       <td><div class="bill-topic-short" title="${b.topic}">${b.topic}</div></td>
       <td><div class="hotness-indicator">${dots}</div></td>
       <td><div class="status-btns">${btns}</div></td>
-      <td><input type="number" class="min-input" value="${minVal}" placeholder="—" min="1" max="120" onchange="setBillMinutes(${b.num},this.value)" title="Minutes on floor"></td>
-      <td></td>
+      <td><input type="text" class="min-input" value="${voteVal}" placeholder="—" onchange="setBillVote(${b.num},this.value)" title="Vote count (e.g. 12-5)"></td>
+      <td><input type="number" class="min-input" value="${minVal}" placeholder="—" min="1" max="180" onchange="setBillMinutes(${b.num},this.value)" title="Minutes on floor"></td>
+      <td><input type="time" class="time-edit-input" value="${startVal}" onchange="setBillTime(${b.num},'startTime',this.value)" title="Floor start time"></td>
+      <td><input type="time" class="time-edit-input" value="${endVal}" onchange="setBillTime(${b.num},'endTime',this.value)" title="Floor end time"></td>
     </tr>`;
   }).join('');
 }
 
+function normalizeStatus(s) {
+  if (!s) return 'pending';
+  const sl = s.toLowerCase().replace(/ /g,'-');
+  if (sl === 'current' || sl === 'in-progress' || sl === 'in progress') return 'in-progress';
+  if (sl === 'tabled-indefinitely' || sl === 'tabled indefinitely') return 'tabled-indefinitely';
+  return sl;
+}
+
 function setBillStatus(num, status) {
-  if (!bills[num]) bills[num] = {status:'pending', minutes:null, order:0};
+  if (!bills[num]) bills[num] = {status:'pending',minutes:null,order:0};
   bills[num].status = status;
-  
-  // Handle floor timer
-  if (status === 'current') {
+
+  if (status === 'in-progress') {
     currentBillNum = num;
+    if (!bills[num].startTime) {
+      const now = new Date();
+      bills[num].startTime = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+    }
     floorTimerStart = Date.now();
     if (floorTimerInterval) clearInterval(floorTimerInterval);
     floorTimerInterval = setInterval(updateFloorTimer, 1000);
   } else if (currentBillNum === num) {
-    // Bill leaving floor — save elapsed time
     if (floorTimerStart) {
-      const elapsed = Math.round((Date.now() - floorTimerStart) / 60000);
+      const now = new Date();
+      bills[num].endTime = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+      const elapsed = Math.round((Date.now()-floorTimerStart)/60000);
       if (elapsed > 0 && !bills[num].minutes) bills[num].minutes = elapsed;
     }
     currentBillNum = null;
     floorTimerStart = null;
     if (floorTimerInterval) { clearInterval(floorTimerInterval); floorTimerInterval = null; }
   }
-  
-  saveBill(num, 'status', status);
+
+  saveBill(num);
   renderAdminDocket();
   updateAdminStats();
   updateCurrentBillBanner();
@@ -911,20 +883,41 @@ function setBillStatus(num, status) {
 
 function setBillMinutes(num, val) {
   const mins = parseInt(val);
-  if (!isNaN(mins) && mins > 0) saveBill(num, 'minutes', mins);
+  if (!isNaN(mins) && mins > 0) {
+    if (!bills[num]) bills[num] = {status:'pending',minutes:null,order:0};
+    bills[num].minutes = mins;
+    saveBill(num);
+  }
+}
+function setBillVote(num, val) {
+  if (!bills[num]) bills[num] = {status:'pending',minutes:null,order:0};
+  bills[num].voteCount = val.trim();
+  saveBill(num);
+}
+function setBillTime(num, field, val) {
+  if (!bills[num]) bills[num] = {status:'pending',minutes:null,order:0};
+  bills[num][field] = val;
+  // Auto-calculate minutes if both times set
+  if (bills[num].startTime && bills[num].endTime) {
+    const [sh,sm] = bills[num].startTime.split(':').map(Number);
+    const [eh,em] = bills[num].endTime.split(':').map(Number);
+    const diff = (eh*60+em)-(sh*60+sm);
+    if (diff > 0) bills[num].minutes = diff;
+  }
+  saveBill(num);
+  renderAdminDocket(); // refresh to show auto-calculated minutes
 }
 
 function updateFloorTimer() {
   if (!floorTimerStart) return;
   const elapsed = Math.floor((Date.now()-floorTimerStart)/1000);
-  const mins = Math.floor(elapsed/60);
-  const secs = elapsed%60;
+  const mins = Math.floor(elapsed/60), secs = elapsed%60;
   document.getElementById('floorTimer').textContent = `${mins}:${secs.toString().padStart(2,'0')}`;
 }
 
 function updateCurrentBillBanner() {
   const banner = document.getElementById('currentBillBanner');
-  const currentBills = BILLS.filter(b => (bills[b.num]||{}).status==='current');
+  const currentBills = BILLS.filter(b => normalizeStatus((bills[b.num]||{}).status)==='in-progress');
   if (currentBills.length > 0) {
     const b = currentBills[0];
     document.getElementById('currentBillName').textContent = `Bill #${b.num}: ${b.topic}`;
@@ -943,16 +936,16 @@ function adminFilter() {
 }
 
 function updateAdminStats() {
-  const counts = {pending:0,current:0,passed:0,failed:0,tabled:0};
-  BILLS.forEach(b => { const s = (bills[b.num]||{}).status||'pending'; counts[s]=(counts[s]||0)+1; });
+  const counts = {pending:0,'in-progress':0,passed:0,failed:0,tabled:0,'tabled-indefinitely':0};
+  BILLS.forEach(b => { const s = normalizeStatus((bills[b.num]||{}).status||'pending'); counts[s]=(counts[s]||0)+1; });
   const done = counts.passed + counts.failed;
-  const el = document.getElementById('adminStats');
-  el.innerHTML = `
+  document.getElementById('adminStats').innerHTML = `
     <div class="mini-stat"><div class="mini-stat-val" style="color:var(--green)">${counts.passed}</div><div class="mini-stat-label">Passed</div></div>
     <div class="mini-stat"><div class="mini-stat-val" style="color:var(--red)">${counts.failed}</div><div class="mini-stat-label">Failed</div></div>
     <div class="mini-stat"><div class="mini-stat-val" style="color:var(--gold)">${counts.tabled}</div><div class="mini-stat-label">Tabled</div></div>
+    <div class="mini-stat"><div class="mini-stat-val" style="color:var(--muted)">${counts['tabled-indefinitely']}</div><div class="mini-stat-label">Tbl. Indef.</div></div>
     <div class="mini-stat"><div class="mini-stat-val" style="color:var(--sky)">${counts.pending}</div><div class="mini-stat-label">Pending</div></div>
-    <div class="mini-stat"><div class="mini-stat-val" style="color:var(--orange)">${counts.current}</div><div class="mini-stat-label">On Floor</div></div>
+    <div class="mini-stat"><div class="mini-stat-val" style="color:var(--orange)">${counts['in-progress']}</div><div class="mini-stat-label">On Floor</div></div>
     <div class="mini-stat"><div class="mini-stat-val">${Math.round(done/78*100)}%</div><div class="mini-stat-label">Complete</div></div>
   `;
 }
@@ -964,11 +957,11 @@ function renderScheduleEditor() {
     <div class="sched-row">
       <div class="sched-label">${s.label}</div>
       <div style="display:flex;align-items:center;gap:6px">
-        <span style="font-size:0.75rem;color:var(--text3)">Start:</span>
+        <span style="font-size:0.73rem;color:var(--text3)">Start:</span>
         <input type="time" class="time-input" value="${s.start}" onchange="updateScheduleTime(${i},'start',this.value)">
       </div>
       <div style="display:flex;align-items:center;gap:6px">
-        <span style="font-size:0.75rem;color:var(--text3)">End:</span>
+        <span style="font-size:0.73rem;color:var(--text3)">End:</span>
         <input type="time" class="time-input" value="${s.end}" onchange="updateScheduleTime(${i},'end',this.value)">
       </div>
       <div class="sched-dur" id="schDur${i}">${calcDur(s.start,s.end)}</div>
@@ -988,20 +981,15 @@ function updateScheduleTime(idx, field, val) {
   document.getElementById(`schDur${idx}`).textContent = calcDur(schedule[idx].start, schedule[idx].end);
   updateScheduleTotals();
 }
-
 function updateScheduleTotals() {
   const total = schedule.reduce((s,b)=>s+(parseTime(b.end)-parseTime(b.start)),0);
   document.getElementById('totalFloorTime').textContent = (total/60).toFixed(1);
   document.getElementById('billCapacity').textContent = Math.floor(total/12);
 }
-
 function saveSchedule() {
   if (!window._firebaseReady) return showToast('Firebase not ready');
-  const db = window._db;
-  const ref = window._ref;
-  const set = window._set;
-  set(ref(db, 'scsl/schedule'), schedule);
-  showToast('Schedule saved!');
+  window._set(window._ref(window._db, 'scsl/schedule'), schedule);
+  showToast('Schedule saved to Firebase!');
   showSaveIndicator();
 }
 
@@ -1009,16 +997,16 @@ function saveSchedule() {
 function renderWhatIfEditor() {
   whatIfSchedule = JSON.parse(JSON.stringify(schedule));
   const el = document.getElementById('whatIfScheduleEditor');
-  el.innerHTML = `<div style="display:grid;gap:10px;margin-bottom:16px">` +
+  el.innerHTML = `<div style="display:grid;gap:9px;margin-bottom:14px">` +
     whatIfSchedule.map((s,i) => `
     <div class="sched-row">
       <div class="sched-label">${s.label}</div>
       <div style="display:flex;align-items:center;gap:6px">
-        <span style="font-size:0.75rem;color:var(--text3)">Start:</span>
+        <span style="font-size:0.73rem;color:var(--text3)">Start:</span>
         <input type="time" class="time-input" value="${s.start}" onchange="updateWhatIf(${i},'start',this.value)">
       </div>
       <div style="display:flex;align-items:center;gap:6px">
-        <span style="font-size:0.75rem;color:var(--text3)">End:</span>
+        <span style="font-size:0.73rem;color:var(--text3)">End:</span>
         <input type="time" class="time-input" value="${s.end}" onchange="updateWhatIf(${i},'end',this.value)">
       </div>
       <div class="sched-dur">${calcDur(s.start,s.end)}</div>
@@ -1035,45 +1023,36 @@ function updateWhatIf(idx, field, val) {
 function recalcWhatIf() {
   const avgMin = parseFloat(document.getElementById('wiAvgMin').value) || 12;
   const billsLeft = parseInt(document.getElementById('wiBillsLeft').value) || 78;
-  
-  // Calculate hot bills in remaining
-  const allBills = BILLS.map(b => ({...b,...(bills[b.num]||{status:'pending'})}));
-  const hotFraction = allBills.filter(b=>b.hotness>=4).length / BILLS.length;
-  
+  const hotFraction = BILLS.filter(b=>b.hotness>=4).length / BILLS.length;
   let timeNeeded = 0;
   for (let i = 0; i < billsLeft; i++) {
-    // Rough estimate: fraction of hot bills
-    const isHot = Math.random() < hotFraction; // deterministic would be better but this is preview
-    timeNeeded += isHot ? avgMin * 1.4 : avgMin;
+    const isHot = (i / billsLeft) < hotFraction;
+    timeNeeded += isHot ? avgMin * 1.35 : avgMin;
   }
-  timeNeeded += whatIfSchedule.length * 5; // start gaps
+  timeNeeded += whatIfSchedule.length * 5;
 
-  const result = projectEndTime(timeNeeded, whatIfSchedule);
+  const result = projectEndTimeWI(timeNeeded, whatIfSchedule);
   document.getElementById('wiEndTime').textContent = result.timeStr;
   document.getElementById('wiEndDay').textContent = result.dayStr;
   document.getElementById('wiDetails').textContent = `~${Math.round(timeNeeded)} min needed · ${(timeNeeded/60).toFixed(1)} hrs · ${billsLeft} bills × ${avgMin} min avg`;
 }
 
-function projectEndTime(minutesNeeded, sched) {
+function projectEndTimeWI(minutesNeeded, sched) {
   const dayNames = ['Wednesday','Thursday','Friday'];
-  function minsToTime(mins) {
-    const h = Math.floor(mins/60)%24;
-    const m = mins%60;
-    const ampm = h>=12?'PM':'AM';
-    const h12 = h>12?h-12:(h===0?12:h);
-    return `${h12}:${m.toString().padStart(2,'0')} ${ampm}`;
-  }
   let minsLeft = minutesNeeded;
   for (let i = 0; i < sched.length; i++) {
     const s = sched[i];
     const dur = parseTime(s.end)-parseTime(s.start);
     if (minsLeft <= dur) {
       const endMins = parseTime(s.start)+minsLeft;
-      return { timeStr: minsToTime(endMins), dayStr: dayNames[s.dayIdx]||'', onTrack: s.dayIdx<2||(s.dayIdx===2&&endMins<=parseTime('12:30')) };
+      const h = Math.floor(endMins/60)%24, m = endMins%60;
+      const ampm = h>=12?'PM':'AM';
+      const h12 = h>12?h-12:(h===0?12:h);
+      return { timeStr:`${h12}:${m.toString().padStart(2,'0')} ${ampm}`, dayStr: dayNames[s.dayIdx]||'' };
     }
     minsLeft -= dur;
   }
-  return { timeStr: "Over Schedule", dayStr: "Beyond floor time", onTrack: false };
+  return { timeStr:"Over Schedule", dayStr:"Beyond floor time" };
 }
 
 // ==================== SETTINGS ====================
@@ -1081,63 +1060,89 @@ function saveGroqKey() {
   if (!window._firebaseReady) return showToast('Firebase not ready');
   const key = document.getElementById('groqKeyInput').value.trim();
   if (!key || key.includes('•')) return showToast('Enter a valid key');
-  const db = window._db; const ref = window._ref; const set = window._set;
-  set(ref(db, 'scsl/config/groqKey'), key);
-  showToast('Groq API key saved!');
+  window._set(window._ref(window._db, 'scsl/config/groqKey'), key);
+  showToast('Groq API key saved to Firebase!');
   document.getElementById('groqKeyInput').value = '••••••••••••••••';
 }
 
 function saveNotes() {
   if (!window._firebaseReady) return showToast('Firebase not ready');
   const notes = document.getElementById('sessionNotes').value;
-  const db = window._db; const ref = window._ref; const set = window._set;
-  set(ref(db, 'scsl/config/sessionNotes'), notes);
+  window._set(window._ref(window._db, 'scsl/config/sessionNotes'), notes);
   showToast('Notes saved!');
 }
 
 async function connectSheets() {
   const url = document.getElementById('sheetsUrlInput').value.trim();
   if (!url) return showToast('Enter a Google Sheets CSV URL');
+  await doSheetSync(url);
+  if (window._firebaseReady) window._set(window._ref(window._db, 'scsl/config/sheetsUrl'), url);
+  savedSheetsUrl = url;
+  document.getElementById('syncSheetsBtn').style.display = 'block';
+}
+
+async function syncSheets() {
+  if (!savedSheetsUrl) return showToast('No Google Sheets URL configured');
+  await doSheetSync(savedSheetsUrl);
+}
+
+async function doSheetSync(url) {
   try {
     const resp = await fetch(url);
-    if (!resp.ok) throw new Error('Could not fetch sheet');
+    if (!resp.ok) throw new Error('Could not fetch sheet — check the URL');
     const text = await resp.text();
-    const lines = text.split('\n').slice(1); // skip header
-    let updated = 0;
-    lines.forEach(line => {
-      const cols = line.split(',');
-      if (cols[0]) {
-        const num = parseInt(cols[0].trim());
-        const status = (cols[1]||'pending').trim().toLowerCase();
-        const mins = parseInt(cols[2])||null;
-        if (num && BILLS.find(b=>b.num===num)) {
-          if (!bills[num]) bills[num] = {status:'pending',minutes:null,order:0};
-          bills[num].status = status;
-          if (mins) bills[num].minutes = mins;
-          updated++;
-        }
+    const lines = text.split('\n');
+    if (lines.length < 2) throw new Error('Sheet appears empty');
+
+    // Parse header to find column indices
+    const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/[^a-z0-9]/g,''));
+    const col = (names) => {
+      for (const n of names) {
+        const idx = headers.findIndex(h => h.includes(n));
+        if (idx !== -1) return idx;
       }
+      return -1;
+    };
+    const billNumCol = col(['billno','bill']);
+    const statusCol = col(['status']);
+    const voteCol = col(['votecount','vote']);
+
+    if (billNumCol === -1 || statusCol === -1) throw new Error('Could not find Bill No. or Status columns');
+
+    let updated = 0;
+    lines.slice(1).forEach(line => {
+      if (!line.trim()) return;
+      const cols = line.split(',');
+      const numRaw = cols[billNumCol]?.trim();
+      if (!numRaw) return;
+      const num = parseInt(numRaw.replace(/\D/g,''));
+      if (!num || !BILLS.find(b=>b.num===num)) return;
+
+      const rawStatus = (cols[statusCol]||'').trim();
+      if (!rawStatus) return;
+      const ns = normalizeStatus(rawStatus);
+      if (!bills[num]) bills[num] = {status:'pending',minutes:null,order:0};
+      bills[num].status = ns;
+
+      if (voteCol !== -1 && cols[voteCol]?.trim()) bills[num].voteCount = cols[voteCol].trim();
+      updated++;
     });
-    if (window._firebaseReady) {
-      const db = window._db; const ref = window._ref; const set = window._set;
-      set(ref(db, 'scsl/bills'), bills);
-      set(ref(db, 'scsl/config/sheetsUrl'), url);
-    }
+
+    if (window._firebaseReady) window._set(window._ref(window._db, 'scsl/bills'), bills);
     document.getElementById('sheetsStatus').className = 'sheets-status connected';
-    document.getElementById('sheetsStatus').textContent = `✓ Connected — ${updated} bills updated from Google Sheets`;
-    showToast(`Imported ${updated} bill statuses`);
+    document.getElementById('sheetsStatus').textContent = `✓ Synced — ${updated} bills updated from Google Sheets (${new Date().toLocaleTimeString()})`;
+    showToast(`✓ Imported ${updated} bill statuses from Google Sheets`);
+    renderAdminDocket();
+    updateAdminStats();
   } catch(e) {
-    showToast(`Error: ${e.message}`);
+    showToast(`❌ Sync error: ${e.message}`);
   }
 }
 
 function confirmReset() {
   if (!confirm('Reset ALL bill statuses to pending? This cannot be undone.')) return;
   BILLS.forEach((b,i) => { bills[b.num] = {status:'pending',minutes:null,order:i}; });
-  if (window._firebaseReady) {
-    const db = window._db; const ref = window._ref; const set = window._set;
-    set(ref(db, 'scsl/bills'), bills);
-  }
+  if (window._firebaseReady) window._set(window._ref(window._db, 'scsl/bills'), bills);
   renderAdminDocket();
   updateAdminStats();
   showToast('All bills reset to pending');
@@ -1145,10 +1150,7 @@ function confirmReset() {
 
 function clearHistory() {
   if (!confirm('Clear end time history chart data?')) return;
-  if (window._firebaseReady) {
-    const db = window._db; const ref = window._ref; const set = window._set;
-    set(ref(db, 'scsl/endTimeHistory'), null);
-  }
+  if (window._firebaseReady) window._set(window._ref(window._db, 'scsl/endTimeHistory'), null);
   showToast('History cleared');
 }
 
@@ -1164,8 +1166,7 @@ function switchTab(name, el) {
 // ==================== THEME ====================
 function toggleTheme() {
   const html = document.documentElement;
-  const current = html.getAttribute('data-theme');
-  html.setAttribute('data-theme', current==='dark'?'light':'dark');
+  html.setAttribute('data-theme', html.getAttribute('data-theme')==='dark'?'light':'dark');
   localStorage.setItem('theme', html.getAttribute('data-theme'));
 }
 (function() {
@@ -1178,7 +1179,7 @@ function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  setTimeout(() => t.classList.remove('show'), 3500);
 }
 
 // ==================== INIT ====================
@@ -1194,6 +1195,8 @@ window.login = login;
 window.switchTab = switchTab;
 window.setBillStatus = setBillStatus;
 window.setBillMinutes = setBillMinutes;
+window.setBillVote = setBillVote;
+window.setBillTime = setBillTime;
 window.adminFilter = adminFilter;
 window.updateScheduleTime = updateScheduleTime;
 window.saveSchedule = saveSchedule;
@@ -1203,6 +1206,7 @@ window.saveGroqKey = saveGroqKey;
 window.savePassword = savePassword;
 window.saveNotes = saveNotes;
 window.connectSheets = connectSheets;
+window.syncSheets = syncSheets;
 window.confirmReset = confirmReset;
 window.clearHistory = clearHistory;
 window.toggleTheme = toggleTheme;
