@@ -7,20 +7,20 @@
 <title>SCSL Admin — Spring 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- SheetJS for xlsx parsing -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-  // ⚠️ REPLACE THIS with your NEW Firebase project config (see setup guide)
   const firebaseConfig = {
-     apiKey: "AIzaSyCGWmE_7Ro1ItkywmeUl9NkczfVX9YgdDc",
-    authDomain: "scsl-tracker-2026.firebaseapp.com",
-    databaseURL: "https://scsl-tracker-2026-default-rtdb.firebaseio.com",
-    projectId: "scsl-tracker-2026",
-    storageBucket: "scsl-tracker-2026.firebasestorage.app",
-    messagingSenderId: "883777937178",
-    appId: "1:883777937178:web:f9dfc6e0c60b33548f96a3",
-    measurementId: "G-43MEW7YF44"
+    apiKey: "REPLACE_WITH_YOUR_API_KEY",
+    authDomain: "REPLACE_WITH_YOUR_PROJECT.firebaseapp.com",
+    databaseURL: "https://REPLACE_WITH_YOUR_PROJECT-default-rtdb.firebaseio.com",
+    projectId: "REPLACE_WITH_YOUR_PROJECT",
+    storageBucket: "REPLACE_WITH_YOUR_PROJECT.appspot.com",
+    messagingSenderId: "REPLACE_WITH_MESSAGING_ID",
+    appId: "REPLACE_WITH_APP_ID"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -35,21 +35,11 @@
 </script>
 <style>
 :root {
-  --navy-black: #0e1520;
-  --navy-black-light: #1a2436;
-  --navy-black-dark: #080d14;
-  --navy: #0d1b2a;
-  --navy-mid: #1b2e45;
-  --navy-light: #243c56;
-  --sky: #4db8e8;
-  --sky-light: #7dd4f5;
-  --sky-dark: #2a9fd6;
-  --gold: #f0c060;
-  --green: #4ade80;
-  --red: #f87171;
-  --orange: #fb923c;
-  --white: #f8fafc;
-  --muted: #94a3b8;
+  --navy-black: #0e1520; --navy-black-light: #1a2436; --navy-black-dark: #080d14;
+  --navy: #0d1b2a; --navy-mid: #1b2e45; --navy-light: #243c56;
+  --sky: #4db8e8; --sky-light: #7dd4f5; --sky-dark: #2a9fd6;
+  --gold: #f0c060; --green: #4ade80; --red: #f87171; --orange: #fb923c;
+  --white: #f8fafc; --muted: #94a3b8;
   --font-display: 'Barlow Condensed', sans-serif;
   --font-body: 'Barlow', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -68,260 +58,162 @@
 body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; }
 
 /* LOGIN */
-#loginScreen {
-  min-height: 100vh;
-  display: flex; align-items: center; justify-content: center;
-  background: radial-gradient(ellipse at center, var(--navy-black-light) 0%, var(--bg) 70%);
-}
-.login-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-top: 3px solid var(--sky);
-  border-radius: 16px;
-  padding: 40px; width: 100%; max-width: 380px; text-align: center;
-}
-.login-logo { font-family: var(--font-display); font-weight: 900; font-size: 2rem; letter-spacing: 0.1em; color: var(--white); margin-bottom: 4px; }
-.login-logo span { color: var(--sky); }
-.login-sub { color: var(--text3); font-size: 0.83rem; margin-bottom: 28px; font-family: var(--font-mono); }
-.input-group { margin-bottom: 16px; text-align: left; }
-.input-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; margin-bottom: 6px; font-family: var(--font-mono); display: block; }
-.text-input {
-  width: 100%; background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 8px; padding: 10px 14px; color: var(--text);
-  font-size: 0.88rem; font-family: var(--font-body); transition: border-color 0.2s;
-}
-.text-input:focus { outline: none; border-color: var(--sky); }
-.btn-primary {
-  width: 100%;
-  background: linear-gradient(135deg, var(--navy-black), var(--sky-dark));
-  color: white; border: none; border-radius: 8px; padding: 12px;
-  font-weight: 700; font-size: 1rem; cursor: pointer;
-  font-family: var(--font-display); letter-spacing: 0.08em; text-transform: uppercase;
-  transition: all 0.2s;
-}
-.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-.login-error { color: var(--red); font-size: 0.8rem; margin-top: 8px; font-family: var(--font-mono); }
+#loginScreen { min-height:100vh; display:flex; align-items:center; justify-content:center; background:radial-gradient(ellipse at center,var(--navy-black-light) 0%,var(--bg) 70%); }
+.login-card { background:var(--surface); border:1px solid var(--border); border-top:3px solid var(--sky); border-radius:16px; padding:40px; width:100%; max-width:380px; text-align:center; }
+.login-logo { font-family:var(--font-display); font-weight:900; font-size:2rem; letter-spacing:0.1em; color:var(--white); margin-bottom:4px; }
+.login-logo span { color:var(--sky); }
+.login-sub { color:var(--text3); font-size:0.83rem; margin-bottom:28px; font-family:var(--font-mono); }
+.input-group { margin-bottom:16px; text-align:left; }
+.input-label { font-size:0.7rem; font-weight:600; letter-spacing:0.1em; color:var(--text3); text-transform:uppercase; margin-bottom:6px; font-family:var(--font-mono); display:block; }
+.text-input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:10px 14px; color:var(--text); font-size:0.88rem; font-family:var(--font-body); transition:border-color 0.2s; }
+.text-input:focus { outline:none; border-color:var(--sky); }
+.btn-primary { width:100%; background:linear-gradient(135deg,var(--navy-black),var(--sky-dark)); color:white; border:none; border-radius:8px; padding:12px; font-weight:700; font-size:1rem; cursor:pointer; font-family:var(--font-display); letter-spacing:0.08em; text-transform:uppercase; transition:all 0.2s; }
+.btn-primary:hover { opacity:0.9; transform:translateY(-1px); }
+.login-error { color:var(--red); font-size:0.8rem; margin-top:8px; font-family:var(--font-mono); }
 
 /* HEADER */
-.site-header {
-  background: var(--navy-black);
-  border-bottom: 3px solid var(--sky-dark);
-  padding: 0 24px;
-  display: flex; align-items: center; justify-content: space-between;
-  height: 64px; position: sticky; top: 0; z-index: 200;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-}
-.site-header h1 { font-family: var(--font-display); font-weight: 900; font-size: 1.6rem; letter-spacing: 0.08em; color: var(--white); text-transform: uppercase; }
-.site-header h1 span { color: var(--sky); }
-.header-actions { display: flex; gap: 12px; align-items: center; }
-.admin-badge {
-  background: rgba(240,192,96,0.15); border: 1px solid rgba(240,192,96,0.3);
-  color: var(--gold); padding: 4px 12px; border-radius: 20px;
-  font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono); letter-spacing: 0.08em;
-}
-.btn-icon {
-  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-  color: white; width: 36px; height: 36px; border-radius: 8px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.2s;
-}
-.btn-icon:hover { background: rgba(255,255,255,0.18); }
+.site-header { background:var(--navy-black); border-bottom:3px solid var(--sky-dark); padding:0 24px; display:flex; align-items:center; justify-content:space-between; height:64px; position:sticky; top:0; z-index:200; box-shadow:0 4px 20px rgba(0,0,0,0.5); }
+.site-header h1 { font-family:var(--font-display); font-weight:900; font-size:1.6rem; letter-spacing:0.08em; color:var(--white); text-transform:uppercase; }
+.site-header h1 span { color:var(--sky); }
+.header-actions { display:flex; gap:12px; align-items:center; }
+.admin-badge { background:rgba(240,192,96,0.15); border:1px solid rgba(240,192,96,0.3); color:var(--gold); padding:4px 12px; border-radius:20px; font-size:0.7rem; font-weight:700; font-family:var(--font-mono); letter-spacing:0.08em; }
+.btn-icon { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:white; width:36px; height:36px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1rem; transition:all 0.2s; }
+.btn-icon:hover { background:rgba(255,255,255,0.18); }
 
 /* TABS */
-.tabs {
-  display: flex; gap: 0; border-bottom: 2px solid var(--border);
-  padding: 0 20px; background: var(--surface);
-  overflow-x: auto; position: sticky; top: 64px; z-index: 150;
-}
-.tab-btn {
-  padding: 13px 18px; border: none; background: none; color: var(--text3);
-  font-weight: 600; font-size: 0.83rem; cursor: pointer; font-family: var(--font-body);
-  border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; white-space: nowrap;
-}
-.tab-btn.active { color: var(--sky); border-bottom-color: var(--sky); }
-.tab-btn:hover { color: var(--text); }
+.tabs { display:flex; gap:0; border-bottom:2px solid var(--border); padding:0 20px; background:var(--surface); overflow-x:auto; position:sticky; top:64px; z-index:150; }
+.tab-btn { padding:13px 18px; border:none; background:none; color:var(--text3); font-weight:600; font-size:0.83rem; cursor:pointer; font-family:var(--font-body); border-bottom:3px solid transparent; margin-bottom:-2px; transition:all 0.2s; white-space:nowrap; }
+.tab-btn.active { color:var(--sky); border-bottom-color:var(--sky); }
+.tab-btn:hover { color:var(--text); }
 
 /* MAIN */
-.container { max-width: 1300px; margin: 0 auto; padding: 22px 18px; }
-.tab-panel { display: none; }
-.tab-panel.active { display: block; }
+.container { max-width:1300px; margin:0 auto; padding:22px 18px; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
 
-/* SECTION CARD */
-.section-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 18px; }
-.card-header {
-  background: linear-gradient(135deg, var(--navy-black), var(--navy-black-light));
-  padding: 13px 18px; display: flex; align-items: center; justify-content: space-between;
-}
-.card-title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--white); }
-.card-body { padding: 18px; }
+/* CARDS */
+.section-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; overflow:hidden; margin-bottom:18px; }
+.card-header { background:linear-gradient(135deg,var(--navy-black),var(--navy-black-light)); padding:13px 18px; display:flex; align-items:center; justify-content:space-between; }
+.card-title { font-family:var(--font-display); font-weight:700; font-size:1.05rem; letter-spacing:0.05em; text-transform:uppercase; color:var(--white); }
+.card-body { padding:18px; }
 
 /* CURRENT BILL BANNER */
-.current-bill-banner {
-  background: linear-gradient(135deg, rgba(251,146,60,0.15), rgba(251,146,60,0.05));
-  border: 1px solid rgba(251,146,60,0.4);
-  border-radius: 10px;
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  display: none;
-  align-items: center;
-  gap: 14px;
-}
-.floor-timer {
-  font-family: var(--font-mono);
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--orange);
-  min-width: 70px;
-}
-.current-bill-name { font-weight: 600; color: var(--text); font-size: 0.9rem; flex: 1; }
+.current-bill-banner { background:linear-gradient(135deg,rgba(251,146,60,0.15),rgba(251,146,60,0.05)); border:1px solid rgba(251,146,60,0.4); border-radius:10px; padding:12px 16px; margin-bottom:16px; display:none; align-items:center; gap:14px; }
+.floor-timer { font-family:var(--font-mono); font-size:1.6rem; font-weight:700; color:var(--orange); min-width:70px; }
+.current-bill-name { font-weight:600; color:var(--text); font-size:0.9rem; flex:1; }
 
 /* ADMIN TABLE */
-/* Fix: use border-collapse and proper thead positioning */
-.table-outer-admin {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-  /* Don't use overflow:auto here — we handle it on the inner scroll div */
-}
-.table-scroll-admin { overflow-x: auto; max-height: 70vh; overflow-y: auto; }
-.admin-table { width: 100%; border-collapse: collapse; }
-.admin-table thead {
-  position: sticky;
-  top: 0;
-  z-index: 20; /* above rows, below tabs */
-}
-.admin-table th {
-  background: var(--navy-black);
-  color: rgba(255,255,255,0.7);
-  font-family: var(--font-mono);
-  font-size: 0.67rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 10px 11px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-  white-space: nowrap;
-}
-.admin-table td {
-  padding: 7px 11px;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.82rem;
-  vertical-align: middle;
-}
-.admin-table tr:last-child td { border-bottom: none; }
-.admin-table tr { background: var(--surface); transition: background 0.15s; }
-.admin-table tr:hover td { background: var(--surface2); }
-.admin-table tr.current-row td { background: rgba(251,146,60,0.07); }
-.bill-num { font-family: var(--font-mono); font-weight: 600; color: var(--sky); }
-.bill-topic-short { color: var(--text2); font-size: 0.77rem; max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.hotness-indicator { display: flex; gap: 2px; }
-.hd { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
-.hd.filled { background: var(--orange); }
-.hd.filled.hi { background: var(--red); }
+.table-outer-admin { border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.table-scroll-admin { overflow-x:auto; max-height:70vh; overflow-y:auto; }
+.admin-table { width:100%; border-collapse:collapse; }
+.admin-table thead { position:sticky; top:0; z-index:20; }
+.admin-table th { background:var(--navy-black); color:rgba(255,255,255,0.7); font-family:var(--font-mono); font-size:0.67rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; padding:10px 11px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
+.admin-table td { padding:7px 11px; border-bottom:1px solid var(--border); font-size:0.82rem; vertical-align:middle; }
+.admin-table tr:last-child td { border-bottom:none; }
+.admin-table tr { background:var(--surface); transition:background 0.15s; }
+.admin-table tr:hover td { background:var(--surface2); }
+.admin-table tr.current-row td { background:rgba(251,146,60,0.07); }
+.bill-num { font-family:var(--font-mono); font-weight:600; color:var(--sky); }
+.bill-topic-short { color:var(--text2); font-size:0.77rem; max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.hotness-indicator { display:flex; gap:2px; }
+.hd { width:7px; height:7px; border-radius:50%; background:var(--border); }
+.hd.filled { background:var(--orange); }
+.hd.filled.hi { background:var(--red); }
 
 /* STATUS BUTTONS */
-.status-btns { display: flex; gap: 3px; flex-wrap: wrap; }
-.sbtn {
-  padding: 3px 9px; border-radius: 5px; border: 1px solid var(--border);
-  background: var(--surface2); color: var(--text3); font-size: 0.68rem; font-weight: 600;
-  cursor: pointer; font-family: var(--font-mono); transition: all 0.15s; white-space: nowrap;
-}
-.sbtn:hover { background: var(--navy-mid); color: var(--text); }
-.sbtn.active-pending { background: rgba(77,184,232,0.15); color: var(--sky); border-color: var(--sky); }
-.sbtn.active-in-progress { background: rgba(251,146,60,0.2); color: var(--orange); border-color: var(--orange); }
-.sbtn.active-passed { background: rgba(74,222,128,0.2); color: var(--green); border-color: var(--green); }
-.sbtn.active-failed { background: rgba(248,113,113,0.2); color: var(--red); border-color: var(--red); }
-.sbtn.active-tabled { background: rgba(240,192,96,0.2); color: var(--gold); border-color: var(--gold); }
-.sbtn.active-tabled-indefinitely { background: rgba(148,163,184,0.2); color: var(--muted); border-color: var(--muted); }
+.status-btns { display:flex; gap:3px; flex-wrap:wrap; }
+.sbtn { padding:3px 9px; border-radius:5px; border:1px solid var(--border); background:var(--surface2); color:var(--text3); font-size:0.68rem; font-weight:600; cursor:pointer; font-family:var(--font-mono); transition:all 0.15s; white-space:nowrap; }
+.sbtn:hover { background:var(--navy-mid); color:var(--text); }
+.sbtn.active-pending { background:rgba(77,184,232,0.15); color:var(--sky); border-color:var(--sky); }
+.sbtn.active-in-progress { background:rgba(251,146,60,0.2); color:var(--orange); border-color:var(--orange); }
+.sbtn.active-passed { background:rgba(74,222,128,0.2); color:var(--green); border-color:var(--green); }
+.sbtn.active-failed { background:rgba(248,113,113,0.2); color:var(--red); border-color:var(--red); }
+.sbtn.active-tabled { background:rgba(240,192,96,0.2); color:var(--gold); border-color:var(--gold); }
+.sbtn.active-tabled-indefinitely { background:rgba(148,163,184,0.2); color:var(--muted); border-color:var(--muted); }
 
 /* INPUTS */
-.min-input {
-  width: 62px; background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 5px; padding: 4px 7px; color: var(--text);
-  font-size: 0.79rem; font-family: var(--font-mono); text-align: center;
-}
-.min-input:focus { outline: none; border-color: var(--sky); }
-.time-edit-input {
-  width: 80px; background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 5px; padding: 4px 7px; color: var(--text);
-  font-size: 0.79rem; font-family: var(--font-mono); text-align: center;
-}
-.time-edit-input:focus { outline: none; border-color: var(--sky); }
+.min-input { width:62px; background:var(--surface2); border:1px solid var(--border); border-radius:5px; padding:4px 7px; color:var(--text); font-size:0.79rem; font-family:var(--font-mono); text-align:center; }
+.min-input:focus { outline:none; border-color:var(--sky); }
+.time-edit-input { width:80px; background:var(--surface2); border:1px solid var(--border); border-radius:5px; padding:4px 7px; color:var(--text); font-size:0.79rem; font-family:var(--font-mono); text-align:center; }
+.time-edit-input:focus { outline:none; border-color:var(--sky); }
 
 /* SCHEDULE EDITOR */
-.schedule-editor { display: flex; flex-direction: column; gap: 10px; }
-.sched-row {
-  display: grid;
-  grid-template-columns: 120px 1fr auto auto auto;
-  gap: 10px; align-items: center;
-  padding: 11px 14px; background: var(--surface2);
-  border: 1px solid var(--border); border-radius: 8px;
-}
-.sched-label { font-family: var(--font-mono); font-size: 0.79rem; color: var(--sky); font-weight: 600; }
-.time-input {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 5px; padding: 6px 9px; color: var(--text);
-  font-size: 0.83rem; font-family: var(--font-mono); width: 88px;
-}
-.time-input:focus { outline: none; border-color: var(--sky); }
-.sched-dur { font-family: var(--font-mono); font-size: 0.79rem; color: var(--gold); min-width: 56px; }
+.schedule-editor { display:flex; flex-direction:column; gap:10px; }
+.sched-row { display:grid; grid-template-columns:130px auto auto auto auto auto; gap:10px; align-items:center; padding:11px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex-wrap:wrap; }
+.sched-label { font-family:var(--font-mono); font-size:0.79rem; color:var(--sky); font-weight:600; }
+.time-input { background:var(--surface); border:1px solid var(--border); border-radius:5px; padding:6px 9px; color:var(--text); font-size:0.83rem; font-family:var(--font-mono); width:88px; }
+.time-input:focus { outline:none; border-color:var(--sky); }
+.date-select { background:var(--surface); border:1px solid var(--border); border-radius:5px; padding:6px 9px; color:var(--text); font-size:0.83rem; font-family:var(--font-mono); cursor:pointer; }
+.date-select:focus { outline:none; border-color:var(--sky); }
+.sched-dur { font-family:var(--font-mono); font-size:0.79rem; color:var(--gold); min-width:56px; }
+
+/* DAY DATE PICKER */
+.day-dates-section { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:14px; }
+.day-dates-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:10px; }
+.day-date-item label { font-size:0.68rem; color:var(--text3); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:4px; }
+.day-date-item input[type=date] { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:7px 10px; color:var(--text); font-size:0.83rem; font-family:var(--font-mono); }
+.day-date-item input[type=date]:focus { outline:none; border-color:var(--sky); }
 
 /* WHAT-IF */
-.whatif-panel {
-  background: var(--navy-mid); border: 1px solid var(--navy-light);
-  border-radius: 10px; padding: 16px; margin-top: 16px;
-}
-.whatif-result { font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--sky); margin: 6px 0 3px; }
-.whatif-label { font-size: 0.7rem; color: var(--text3); font-family: var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.whatif-panel { background:var(--navy-mid); border:1px solid var(--navy-light); border-radius:10px; padding:16px; margin-top:16px; }
+.whatif-result { font-family:var(--font-display); font-size:2rem; font-weight:700; color:var(--sky); margin:6px 0 3px; }
+.whatif-label { font-size:0.7rem; color:var(--text3); font-family:var(--font-mono); letter-spacing:0.08em; text-transform:uppercase; }
 
 /* TOOLBAR */
-.admin-toolbar { display: flex; gap: 10px; margin-bottom: 13px; flex-wrap: wrap; align-items: center; }
-.search-input {
-  flex: 1; min-width: 200px; background: var(--surface2);
-  border: 1px solid var(--border); border-radius: 8px;
-  padding: 7px 13px; color: var(--text); font-size: 0.83rem; font-family: var(--font-body);
-}
-.search-input:focus { outline: none; border-color: var(--sky); }
-.btn-sm {
-  padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border);
-  background: var(--surface2); color: var(--text2); font-size: 0.79rem; font-weight: 600;
-  cursor: pointer; font-family: var(--font-body); transition: all 0.2s;
-}
-.btn-sm:hover { background: var(--navy-mid); color: var(--text); }
-.btn-sm.primary { background: var(--sky-dark); border-color: var(--sky); color: white; }
-.btn-sm.danger { background: rgba(248,113,113,0.1); border-color: var(--red); color: var(--red); }
+.admin-toolbar { display:flex; gap:10px; margin-bottom:13px; flex-wrap:wrap; align-items:center; }
+.search-input { flex:1; min-width:200px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:7px 13px; color:var(--text); font-size:0.83rem; font-family:var(--font-body); }
+.search-input:focus { outline:none; border-color:var(--sky); }
+.btn-sm { padding:7px 14px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); color:var(--text2); font-size:0.79rem; font-weight:600; cursor:pointer; font-family:var(--font-body); transition:all 0.2s; white-space:nowrap; }
+.btn-sm:hover { background:var(--navy-mid); color:var(--text); }
+.btn-sm.primary { background:var(--sky-dark); border-color:var(--sky); color:white; }
+.btn-sm.danger { background:rgba(248,113,113,0.1); border-color:var(--red); color:var(--red); }
 
 /* SAVE INDICATOR */
-.save-indicator {
-  font-family: var(--font-mono); font-size: 0.7rem; color: var(--green);
-  display: flex; align-items: center; gap: 4px; opacity: 0; transition: opacity 0.3s;
-}
-.save-indicator.show { opacity: 1; }
+.save-indicator { font-family:var(--font-mono); font-size:0.7rem; color:var(--green); display:flex; align-items:center; gap:4px; opacity:0; transition:opacity 0.3s; }
+.save-indicator.show { opacity:1; }
 
 /* STATS */
-.admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 9px; margin-bottom: 14px; }
-.mini-stat { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; text-align: center; }
-.mini-stat-val { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; color: var(--sky); }
-.mini-stat-label { font-size: 0.67rem; color: var(--text3); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; }
+.admin-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:9px; margin-bottom:14px; }
+.mini-stat { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; text-align:center; }
+.mini-stat-val { font-family:var(--font-display); font-weight:700; font-size:1.5rem; color:var(--sky); }
+.mini-stat-label { font-size:0.67rem; color:var(--text3); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:0.08em; }
 
 /* GOOGLE SHEETS */
-.sheets-status {
-  padding: 9px 13px; border-radius: 7px; font-size: 0.8rem; font-family: var(--font-mono);
-  margin-bottom: 12px;
-}
-.sheets-status.connected { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); color: var(--green); }
-.sheets-status.disconnected { background: rgba(251,146,60,0.1); border: 1px solid rgba(251,146,60,0.3); color: var(--orange); }
+.sheets-status { padding:9px 13px; border-radius:7px; font-size:0.8rem; font-family:var(--font-mono); margin-bottom:12px; }
+.sheets-status.connected { background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.3); color:var(--green); }
+.sheets-status.disconnected { background:rgba(251,146,60,0.1); border:1px solid rgba(251,146,60,0.3); color:var(--orange); }
+.sheets-status.polling { background:rgba(77,184,232,0.1); border:1px solid rgba(77,184,232,0.3); color:var(--sky); }
+
+/* UPLOAD TAB */
+.upload-zone { border:2px dashed var(--border); border-radius:12px; padding:40px 24px; text-align:center; cursor:pointer; transition:all 0.2s; background:var(--surface2); }
+.upload-zone:hover, .upload-zone.drag-over { border-color:var(--sky); background:rgba(77,184,232,0.06); }
+.upload-zone-icon { font-size:2.5rem; margin-bottom:12px; }
+.upload-zone-text { font-size:0.9rem; color:var(--text2); }
+.upload-zone-sub { font-size:0.78rem; color:var(--text3); margin-top:6px; font-family:var(--font-mono); }
+.upload-preview { margin-top:16px; }
+.preview-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+.preview-table th { background:var(--navy-black); color:rgba(255,255,255,0.7); padding:8px 10px; text-align:left; font-family:var(--font-mono); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; }
+.preview-table td { padding:7px 10px; border-bottom:1px solid var(--border); color:var(--text2); }
+.preview-table tr:last-child td { border-bottom:none; }
+.hotness-badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.68rem; font-family:var(--font-mono); font-weight:600; }
+.col-map-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:10px; margin-bottom:14px; }
+.col-map-item label { font-size:0.68rem; color:var(--text3); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:4px; }
+.col-map-item select { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:6px 10px; color:var(--text); font-size:0.82rem; }
+
+/* AUTO-POLL */
+.poll-indicator { display:flex; align-items:center; gap:8px; padding:8px 12px; background:rgba(77,184,232,0.08); border:1px solid rgba(77,184,232,0.2); border-radius:8px; font-family:var(--font-mono); font-size:0.75rem; color:var(--sky); }
+.poll-dot { width:8px; height:8px; border-radius:50%; background:var(--sky); animation:pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+.change-log { max-height:200px; overflow-y:auto; border:1px solid var(--border); border-radius:8px; }
+.change-item { padding:8px 12px; border-bottom:1px solid var(--border); font-size:0.78rem; font-family:var(--font-mono); display:flex; gap:8px; align-items:baseline; }
+.change-item:last-child { border-bottom:none; }
+.change-time { color:var(--text3); font-size:0.7rem; white-space:nowrap; }
+.change-bill { color:var(--sky); font-weight:600; }
+.change-desc { color:var(--text2); }
 
 /* TOAST */
-.toast {
-  position: fixed; bottom: 20px; right: 20px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-left: 3px solid var(--sky); border-radius: 10px;
-  padding: 11px 16px; font-size: 0.83rem; z-index: 9999;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-  opacity: 0; transform: translateY(10px); transition: all 0.3s; max-width: 320px;
-}
-.toast.show { opacity: 1; transform: translateY(0); }
+.toast { position:fixed; bottom:20px; right:20px; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--sky); border-radius:10px; padding:11px 16px; font-size:0.83rem; z-index:9999; box-shadow:0 8px 30px rgba(0,0,0,0.3); opacity:0; transform:translateY(10px); transition:all 0.3s; max-width:320px; }
+.toast.show { opacity:1; transform:translateY(0); }
 </style>
 </head>
 <body>
@@ -337,7 +229,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     </div>
     <button class="btn-primary" onclick="login()">Access Admin Panel</button>
     <div class="login-error" id="loginError"></div>
-    <div style="margin-top:16px;font-size:0.72rem;color:var(--text3);font-family:var(--font-mono)">Default password: <strong style="color:var(--gold)">futhomas</strong></div>
+    <div style="margin-top:16px;font-size:0.72rem;color:var(--text3);font-family:var(--font-mono)">Default password: <strong style="color:var(--gold)">tigers</strong></div>
   </div>
 </div>
 
@@ -360,6 +252,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <button class="tab-btn active" onclick="switchTab('docket',this)">📋 Docket</button>
     <button class="tab-btn" onclick="switchTab('schedule',this)">🗓 Schedule</button>
     <button class="tab-btn" onclick="switchTab('whatif',this)">🔮 What-If</button>
+    <button class="tab-btn" onclick="switchTab('billbook',this)">📂 Bill Book</button>
     <button class="tab-btn" onclick="switchTab('settings',this)">⚙️ Settings</button>
     <button class="tab-btn" onclick="switchTab('help',this)">📖 Help</button>
   </nav>
@@ -368,6 +261,11 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
     <!-- DOCKET TAB -->
     <div id="tab-docket" class="tab-panel active">
+
+      <!-- No bills loaded warning -->
+      <div id="noBillsWarning" style="display:none;margin-bottom:14px;padding:12px 16px;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:10px;font-size:0.85rem;color:var(--red)">
+        ⚠️ No bill book loaded yet. <a href="#" onclick="switchTab('billbook',document.querySelector('[onclick*=billbook]'));return false;" style="color:var(--sky)">Go to Bill Book tab</a> to upload your .xlsx file first.
+      </div>
 
       <!-- Current Bill Banner -->
       <div class="current-bill-banner" id="currentBillBanner">
@@ -379,12 +277,14 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
           <div style="font-size:0.67rem;color:var(--text3);font-family:var(--font-mono)">ELAPSED</div>
           <div class="floor-timer" id="floorTimer">0:00</div>
         </div>
+        <div style="text-align:center">
+          <div style="font-size:0.67rem;color:var(--text3);font-family:var(--font-mono)">SOURCE</div>
+          <div style="font-size:0.75rem;color:var(--text2);font-family:var(--font-mono)" id="timerSource">manual</div>
+        </div>
       </div>
 
-      <!-- Stats -->
       <div id="adminStats" class="admin-stats"></div>
 
-      <!-- Toolbar -->
       <div class="admin-toolbar">
         <input type="text" class="search-input" id="adminSearch" placeholder="Search bill number, topic, author, school…" oninput="adminFilter()">
         <select class="search-input" id="adminFilterStatus" onchange="adminFilter()" style="flex:0;min-width:150px;cursor:pointer">
@@ -396,32 +296,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
           <option value="tabled">⏸ Tabled</option>
           <option value="tabled-indefinitely">🚫 Tabled Indefinitely</option>
         </select>
+        <button class="btn-sm danger" onclick="confirmReset()">↺ Reset All</button>
       </div>
 
-      <!-- Admin Docket Table — fixed header overlap -->
       <div class="table-outer-admin">
         <div class="table-scroll-admin">
           <table class="admin-table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Author / School</th>
-                <th>Purpose / Topic</th>
-                <th>Heat</th>
-                <th>Status</th>
-                <th>Vote</th>
-                <th>Min</th>
-                <th>Start</th>
-                <th>End</th>
+                <th>#</th><th>Author / School</th><th>Purpose / Topic</th><th>Heat</th>
+                <th>Status</th><th>Vote</th><th>Duration</th><th>Start</th><th>End</th>
               </tr>
             </thead>
             <tbody id="adminDocketBody"></tbody>
           </table>
         </div>
       </div>
-
       <div style="margin-top:10px;font-size:0.72rem;color:var(--text3);font-family:var(--font-mono)">
-        📝 Tip: Use the <strong>Start</strong> and <strong>End</strong> time fields to manually record or correct floor times. Minutes auto-calculate.
+        ⏱ Duration shows as <strong>H:MM</strong>. Capped at 9:59. Auto-calculated from Start/End times if both are set.
       </div>
     </div>
 
@@ -429,13 +321,32 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div id="tab-schedule" class="tab-panel">
       <div class="section-card">
         <div class="card-header">
-          <span class="card-title">🗓 Floor Schedule Editor</span>
+          <span class="card-title">🗓 Session Dates & Floor Schedule</span>
           <button class="btn-sm primary" onclick="saveSchedule()">Save to Firebase</button>
         </div>
         <div class="card-body">
-          <p style="font-size:0.8rem;color:var(--text3);margin-bottom:14px;font-family:var(--font-mono)">
-            Adjust start/end times for each floor session. Changes instantly recalculate all projections and update for all viewers.
-          </p>
+
+          <!-- Day Dates -->
+          <div class="day-dates-section">
+            <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;font-family:var(--font-mono)">Session Dates</div>
+            <div style="font-size:0.79rem;color:var(--text3);margin-top:4px">Set the actual calendar dates for each day of session. Used for display and time calculations.</div>
+            <div class="day-dates-grid">
+              <div class="day-date-item">
+                <label>Day 1 — Wednesday</label>
+                <input type="date" id="dateDay0" onchange="saveDates()">
+              </div>
+              <div class="day-date-item">
+                <label>Day 2 — Thursday</label>
+                <input type="date" id="dateDay1" onchange="saveDates()">
+              </div>
+              <div class="day-date-item">
+                <label>Day 3 — Friday</label>
+                <input type="date" id="dateDay2" onchange="saveDates()">
+              </div>
+            </div>
+          </div>
+
+          <p style="font-size:0.79rem;color:var(--text3);margin-bottom:12px;font-family:var(--font-mono)">Adjust start/end times for each floor session. Changes instantly update all projections.</p>
           <div class="schedule-editor" id="scheduleEditor"></div>
           <div style="margin-top:14px;padding:12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
             <div style="font-size:0.67rem;color:var(--text3);font-family:var(--font-mono);margin-bottom:6px">TOTALS</div>
@@ -457,13 +368,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <!-- WHAT-IF TAB -->
     <div id="tab-whatif" class="tab-panel">
       <div class="section-card">
-        <div class="card-header">
-          <span class="card-title">🔮 What-If Scenario Planner</span>
-        </div>
+        <div class="card-header"><span class="card-title">🔮 What-If Scenario Planner</span></div>
         <div class="card-body">
-          <p style="font-size:0.83rem;color:var(--text2);margin-bottom:18px;line-height:1.6">
-            Adjust scenario parameters to see how schedule changes affect the projected end time — without affecting the live schedule.
-          </p>
+          <p style="font-size:0.83rem;color:var(--text2);margin-bottom:18px;line-height:1.6">Adjust scenario parameters to see how schedule changes affect projected end time — without affecting the live schedule.</p>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
             <div>
               <label class="input-label" style="display:block;font-size:0.68rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;font-family:var(--font-mono)">Avg Minutes Per Bill</label>
@@ -471,7 +378,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
             </div>
             <div>
               <label class="input-label" style="display:block;font-size:0.68rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;font-family:var(--font-mono)">Bills Remaining</label>
-              <input type="number" class="text-input" id="wiBillsLeft" value="78" min="0" max="78" oninput="recalcWhatIf()">
+              <input type="number" class="text-input" id="wiBillsLeft" value="78" min="0" max="300" oninput="recalcWhatIf()">
             </div>
           </div>
           <p style="font-size:0.79rem;color:var(--text3);margin-bottom:12px;font-family:var(--font-mono)">ADJUST SCENARIO SCHEDULE (does not affect live schedule):</p>
@@ -481,6 +388,57 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
             <div class="whatif-result" id="wiEndTime">—</div>
             <div style="font-size:0.83rem;color:var(--text2)" id="wiEndDay">Adjust parameters above</div>
             <div style="margin-top:10px;font-size:0.79rem;color:var(--text3);font-family:var(--font-mono)" id="wiDetails"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BILL BOOK TAB -->
+    <div id="tab-billbook" class="tab-panel">
+      <div class="section-card">
+        <div class="card-header">
+          <span class="card-title">📂 Upload Bill Book (.xlsx)</span>
+          <span id="billBookStatus" style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono)">No file loaded</span>
+        </div>
+        <div class="card-body">
+          <p style="font-size:0.85rem;color:var(--text2);margin-bottom:16px;line-height:1.6">
+            Upload your bill book spreadsheet. Required columns: <code style="color:var(--sky);background:var(--surface2);padding:2px 6px;border-radius:4px">Bill No.</code> <code style="color:var(--sky);background:var(--surface2);padding:2px 6px;border-radius:4px">Bill Author</code> <code style="color:var(--sky);background:var(--surface2);padding:2px 6px;border-radius:4px">Delegation</code> <code style="color:var(--sky);background:var(--surface2);padding:2px 6px;border-radius:4px">Purpose Statement</code>. Extra columns (hotness, etc.) are optional.
+          </p>
+
+          <!-- Drop zone -->
+          <div class="upload-zone" id="uploadZone" onclick="document.getElementById('xlsxFileInput').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleXlsxDrop(event)">
+            <div class="upload-zone-icon">📊</div>
+            <div class="upload-zone-text">Click to select or drag & drop your .xlsx file</div>
+            <div class="upload-zone-sub">Supports .xlsx and .xls formats · All commas in text are handled correctly</div>
+          </div>
+          <input type="file" id="xlsxFileInput" accept=".xlsx,.xls" style="display:none" onchange="handleXlsxFile(this.files[0])">
+
+          <!-- Column mapping (shown after upload) -->
+          <div id="colMapSection" style="display:none;margin-top:16px">
+            <div style="font-size:0.72rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;font-family:var(--font-mono);margin-bottom:10px">Map Columns (auto-detected — verify and adjust if needed)</div>
+            <div class="col-map-grid" id="colMapGrid"></div>
+            <div style="display:flex;gap:10px;margin-top:10px">
+              <button class="btn-sm primary" onclick="importBillBook()">✓ Import Bills</button>
+              <button class="btn-sm" onclick="cancelUpload()">Cancel</button>
+            </div>
+          </div>
+
+          <!-- Preview -->
+          <div class="upload-preview" id="uploadPreview" style="display:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+              <div style="font-size:0.72rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;font-family:var(--font-mono)" id="previewTitle">Preview</div>
+              <button class="btn-sm danger" onclick="clearBillBook()">🗑 Clear Bill Book</button>
+            </div>
+            <div style="overflow-x:auto;max-height:400px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">
+              <table class="preview-table" id="previewTable"></table>
+            </div>
+          </div>
+
+          <div style="margin-top:16px;padding:12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+            <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;font-family:var(--font-mono);margin-bottom:8px">Hotness Scoring</div>
+            <p style="font-size:0.79rem;color:var(--text2);line-height:1.6">
+              Hotness (1–5) determines debate time multipliers. You can add a <code style="color:var(--sky)">Hotness</code> column to your sheet, or the system will auto-score based on keywords in the purpose statement (guns, immigration, marriage, abortion, drugs → higher scores).
+            </p>
           </div>
         </div>
       </div>
@@ -508,21 +466,39 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
                 <input type="password" class="text-input" id="newPwInput" placeholder="New password…" style="flex:1">
                 <button class="btn-sm primary" onclick="savePassword()">Update</button>
               </div>
-              <p style="font-size:0.73rem;color:var(--text3);margin-top:4px">Stored locally in browser. Default: <code style="color:var(--gold)">futhomas</code></p>
+              <p style="font-size:0.73rem;color:var(--text3);margin-top:4px">Stored locally in browser. Default: <code style="color:var(--gold)">tigers</code></p>
             </div>
 
             <div style="border-top:1px solid var(--border);padding-top:14px">
-              <div style="font-size:0.68rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;font-family:var(--font-mono);margin-bottom:10px">Google Sheets Integration</div>
-              <div class="sheets-status disconnected" id="sheetsStatus">⚠ Not configured — using manual entry mode</div>
+              <div style="font-size:0.68rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;font-family:var(--font-mono);margin-bottom:10px">Google Sheets Auto-Sync</div>
+              <div class="sheets-status disconnected" id="sheetsStatus">⚠ Not configured</div>
+
               <div style="margin-top:10px;display:grid;gap:9px">
-                <input type="text" class="text-input" id="sheetsUrlInput" placeholder="Google Sheets published CSV URL">
-                <button class="btn-sm primary" onclick="connectSheets()">Connect & Sync Google Sheets</button>
+                <div>
+                  <label style="font-size:0.7rem;color:var(--text3);font-family:var(--font-mono);display:block;margin-bottom:4px">Published Sheet URL (TSV format — avoids comma problems)</label>
+                  <input type="text" class="text-input" id="sheetsUrlInput" placeholder="https://docs.google.com/spreadsheets/d/…/pub?gid=0&single=true&output=tsv">
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <button class="btn-sm primary" onclick="connectSheets()">Connect & Start Auto-Sync</button>
+                  <button class="btn-sm" onclick="syncSheets()" id="syncSheetsBtn" style="display:none">🔄 Sync Now</button>
+                  <button class="btn-sm danger" onclick="stopAutoSync()" id="stopSyncBtn" style="display:none">⏹ Stop Auto-Sync</button>
+                </div>
+                <div id="pollIndicator" style="display:none" class="poll-indicator">
+                  <div class="poll-dot"></div>
+                  <span>Auto-syncing every <strong>20s</strong> — detecting status changes and auto-timing bills</span>
+                  <span id="pollCountdown" style="margin-left:auto;opacity:0.6"></span>
+                </div>
                 <p style="font-size:0.73rem;color:var(--text3);line-height:1.6">
-                  In Google Sheets: <strong>File → Share → Publish to web → Choose sheet → CSV → Copy link</strong><br>
-                  Expected column headers (exact): <code style="color:var(--sky)">Bill No. / Bill Author / Delegation / Purpose Statement / Status / Vote Count / Executive action</code><br>
-                  Status values: <code style="color:var(--sky)">passed / failed / tabled / tabled indefinitely / In progress</code>
+                  <strong>How to get the TSV URL:</strong> In Google Sheets → <strong>File → Share → Publish to web → choose your sheet tab → change "Web page" to <em>Tab-separated values (.tsv)</em> → Publish → Copy link</strong><br>
+                  Required columns: <code style="color:var(--sky)">Bill No.</code> <code style="color:var(--sky)">Status</code> — Optional: <code style="color:var(--sky)">Vote Count</code><br>
+                  Status values: <code style="color:var(--sky)">passed / failed / tabled / tabled indefinitely / in progress</code>
                 </p>
-                <button class="btn-sm" onclick="syncSheets()" id="syncSheetsBtn" style="display:none">🔄 Re-sync Now</button>
+
+                <!-- Change Log -->
+                <div id="changeLogSection" style="display:none">
+                  <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;font-family:var(--font-mono);margin-bottom:8px">Auto-Detected Change Log</div>
+                  <div class="change-log" id="changeLog"></div>
+                </div>
               </div>
             </div>
 
@@ -540,7 +516,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="section-card">
         <div class="card-header"><span class="card-title">📋 Session Notes (shown on public page)</span></div>
         <div class="card-body">
-          <textarea class="text-input" id="sessionNotes" rows="6" placeholder="Add notes, announcements, or context…" style="width:100%;resize:vertical;line-height:1.6"></textarea>
+          <textarea class="text-input" id="sessionNotes" rows="5" placeholder="Add notes, announcements, or context…" style="width:100%;resize:vertical;line-height:1.6"></textarea>
           <div style="margin-top:10px;display:flex;justify-content:flex-end">
             <button class="btn-sm primary" onclick="saveNotes()">Save Notes</button>
           </div>
@@ -554,61 +530,49 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
         <div class="card-header"><span class="card-title">📖 Setup & Usage Guide</span></div>
         <div class="card-body" style="line-height:1.8;font-size:0.88rem;color:var(--text2)">
 
-          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.2rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:12px">🔥 Step 1 — Create a New Firebase Project</h3>
+          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.15rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">🔥 Step 1 — Firebase Setup</h3>
           <ol style="padding-left:20px;margin-bottom:20px">
-            <li>Go to <a href="https://console.firebase.google.com" target="_blank" style="color:var(--sky)">console.firebase.google.com</a> and click <strong>Add Project</strong></li>
-            <li>Name it something like <strong>scsl-tracker-2026</strong> → Disable Google Analytics → Create Project</li>
-            <li>Once created, click <strong>Build → Realtime Database → Create Database</strong></li>
-            <li>Choose any location → Start in <strong>test mode</strong> → Enable</li>
-            <li>In Realtime Database → <strong>Rules</strong> tab, set rules to:<br>
-              <code style="background:var(--surface2);padding:8px 12px;border-radius:6px;display:block;margin-top:8px;font-size:0.8rem;color:var(--sky)">{ "rules": { "scsl": { ".read": true, ".write": true } } }</code>
-            </li>
-            <li>Go back to Project Overview → Click the web icon (&lt;/&gt;) → Register app → Get your config object</li>
-            <li>Replace the <code style="color:var(--gold)">REPLACE_WITH_YOUR_...</code> placeholders in BOTH <strong>index.html</strong> and <strong>admin.html</strong> with your real Firebase config values</li>
+            <li>Go to <a href="https://console.firebase.google.com" target="_blank" style="color:var(--sky)">console.firebase.google.com</a> → Add Project → name it <strong>scsl-tracker-2026</strong></li>
+            <li>Build → Realtime Database → Create Database → Start in test mode</li>
+            <li>Rules tab: set to <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;color:var(--sky)">{ "rules": { "scsl": { ".read": true, ".write": true } } }</code></li>
+            <li>Project Overview → Web icon (&lt;/&gt;) → Register app → copy config → paste into both HTML files replacing <code style="color:var(--gold)">REPLACE_WITH_YOUR_...</code></li>
           </ol>
 
-          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.2rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:12px">🌐 Step 2 — Deploy to GitHub Pages</h3>
+          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.15rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">🌐 Step 2 — GitHub Pages</h3>
           <ol style="padding-left:20px;margin-bottom:20px">
-            <li>Go to <a href="https://github.com" target="_blank" style="color:var(--sky)">github.com</a> → New repository → name it <strong>scsl-tracker</strong> → Public → Create</li>
-            <li>Upload both files. Rename: <code>scsl_index.html → index.html</code> and <code>scsl_admin.html → admin.html</code></li>
-            <li>Go to <strong>Settings → Pages → Source: Deploy from branch → main → / (root) → Save</strong></li>
-            <li>Your URLs: <code style="color:var(--gold)">yourusername.github.io/scsl-tracker</code> (public) and <code style="color:var(--gold)">yourusername.github.io/scsl-tracker/admin.html</code> (admin)</li>
+            <li>New GitHub repo → upload both files as <strong>index.html</strong> and <strong>admin.html</strong></li>
+            <li>Settings → Pages → Deploy from main branch → Save</li>
+            <li>Public URL: <code style="color:var(--gold)">yourusername.github.io/scsl-tracker</code></li>
           </ol>
 
-          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.2rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:12px">🤖 Step 3 — Set Up Groq AI (Free)</h3>
+          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.15rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">📂 Step 3 — Upload Bill Book</h3>
           <ol style="padding-left:20px;margin-bottom:20px">
-            <li>Go to <a href="https://console.groq.com" target="_blank" style="color:var(--sky)">console.groq.com</a> → Sign up (free, no credit card)</li>
-            <li>Create an API key</li>
-            <li>Come to <strong>Admin → Settings → Groq API Key → Paste → Save</strong></li>
-            <li>The key is stored in Firebase — it never appears in your GitHub code</li>
+            <li>Go to <strong>Bill Book tab</strong> → upload your .xlsx file</li>
+            <li>Columns needed: <code style="color:var(--sky)">Bill No. / Bill Author / Delegation / Purpose Statement</code></li>
+            <li>Optional: add a <code style="color:var(--sky)">Hotness</code> column (1–5) — otherwise auto-scored from keywords</li>
+            <li>Verify the column mapping → click Import Bills → bills are saved to Firebase</li>
           </ol>
 
-          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.2rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:12px">📊 Step 4 — Connect Google Sheets (Optional but Recommended)</h3>
+          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.15rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">🗓 Step 4 — Set Session Dates</h3>
           <ol style="padding-left:20px;margin-bottom:20px">
-            <li>Open your SCSL docket Google Sheet</li>
-            <li>Make sure column headers are exactly: <code style="color:var(--sky)">Bill No. / Bill Author / Delegation / Purpose Statement / Status / Vote Count / Executive action</code></li>
-            <li><strong>File → Share → Publish to web → choose your sheet tab → CSV format → Publish → Copy link</strong></li>
-            <li>Go to <strong>Admin → Settings → Google Sheets → paste URL → Connect</strong></li>
-            <li>Status values that sync: <code style="color:var(--sky)">passed / failed / tabled / tabled indefinitely / In progress</code></li>
-            <li>Re-sync anytime by clicking <strong>Re-sync Now</strong></li>
+            <li>Go to <strong>Schedule tab</strong> → set the calendar dates for Day 1/2/3</li>
+            <li>Adjust floor time windows as needed → Save to Firebase</li>
           </ol>
 
-          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.2rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:12px">🏛️ Using During Session</h3>
-          <ul style="padding-left:20px;margin-bottom:20px">
-            <li><strong>Mark a bill "🔴 On Floor"</strong> when it comes up — floor timer starts automatically</li>
-            <li><strong>Enter minutes manually</strong> in the Min field, or use the Start/End time columns for precise timing</li>
-            <li><strong>Mark Passed / Failed / Tabled</strong> when done — projection updates instantly for everyone</li>
-            <li><strong>Tabled</strong> = bill will return later (counts ~50% time remaining). <strong>Tabled Indefinitely</strong> = won't return (excluded from projection)</li>
-            <li>The <strong>public index.html</strong> updates in real-time for all viewers — share that URL with everyone in the room</li>
-            <li>The <strong>Statistical Projection</strong> at the top of the public page is the primary display — the AI panel is supplemental</li>
-          </ul>
+          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.15rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">📊 Step 5 — Google Sheets Auto-Sync (Optional but Powerful)</h3>
+          <ol style="padding-left:20px;margin-bottom:20px">
+            <li>In your docket Google Sheet: <strong>File → Share → Publish to web → choose your sheet → Tab-separated values (.tsv) → Publish → copy URL</strong></li>
+            <li>Settings tab → paste TSV URL → Connect & Start Auto-Sync</li>
+            <li><strong>Auto-timing:</strong> When a bill changes from blank/pending → "in progress", the timer starts automatically. When it changes to passed/failed/tabled, the duration is recorded. No manual timing needed!</li>
+            <li>Polls every 20 seconds. All detected changes logged in the Change Log.</li>
+          </ol>
 
-          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.2rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:12px">🔐 Passwords & Security</h3>
+          <h3 style="color:var(--sky);font-family:var(--font-display);font-size:1.15rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">🏛️ Using During Session</h3>
           <ul style="padding-left:20px">
-            <li>Default admin password: <code style="color:var(--gold)">futhomas</code> — change in <strong>Settings → Admin Password</strong></li>
-            <li>Password is stored in your local browser — different devices each need to set it</li>
-            <li>Firebase rules are public read, but anyone who wants to write needs to know your Firebase project config — keep that private</li>
-            <li>Groq API key is stored encrypted in Firebase and never exposed in GitHub source code</li>
+            <li><strong>Manual mode:</strong> Hit 🔴 Floor when bill starts → ✅/❌/⏸ when done. Duration auto-calculates.</li>
+            <li><strong>Sheets auto mode:</strong> Just update your Google Sheet. Changes sync in ~20s and timing is automatic.</li>
+            <li>Duration displayed as <strong>H:MM</strong> (e.g., 0:14 = 14 minutes, 1:05 = 1hr 5min)</li>
+            <li><strong>Tabled</strong> = returns later (50% time remaining estimated). <strong>Tabled Indefinitely</strong> = excluded from projection.</li>
           </ul>
 
         </div>
@@ -621,87 +585,8 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 <div class="toast" id="toast"></div>
 
 <script>
-// ==================== BILL DATA ====================
-const BILLS = [
-  {num:20,author:"Emmy Omondi",school:"BJU",topic:"Hospital fraud / phantom billing and price gouging",hotness:2},
-  {num:23,author:"James Price",school:"BJU",topic:"Tax credits for workforce training programs",hotness:2},
-  {num:25,author:"Silas Kelton",school:"BJU",topic:"Increase tax on electric vehicles",hotness:3},
-  {num:27,author:"TJ Whaley",school:"BJU",topic:"Internships/apprenticeships for HS seniors",hotness:1},
-  {num:30,author:"Trevor Gearhart",school:"BJU",topic:"Abolish state income tax for minors",hotness:2},
-  {num:32,author:"Amiris Roberts",school:"CCU",topic:"Tiered driver competency assessment at license renewal",hotness:2},
-  {num:34,author:"Ashley Zito",school:"CCU",topic:"Annual audits of county child protective services",hotness:2},
-  {num:36,author:"Brian Hughes",school:"CCU",topic:"Financial assistance for college students GPA <3.0",hotness:2},
-  {num:38,author:"Camille Fortino",school:"CCU",topic:"Law enforcement misconduct reform",hotness:4},
-  {num:40,author:"Carson Hardee",school:"CCU",topic:"Firearm safety course for first-time handgun purchasers",hotness:5},
-  {num:42,author:"Chelsei Brown",school:"CCU",topic:"Due process — felony defendants copy of indictment",hotness:2},
-  {num:43,author:"Connor Mojo",school:"CCU",topic:"Require vets to report suspected animal cruelty",hotness:1},
-  {num:44,author:"Daniel Lala",school:"CCU",topic:"Amend Medical Ethics and Diversity Act",hotness:3},
-  {num:46,author:"Kallie Lacount",school:"CCU",topic:"Mental health conditions as excused school absences",hotness:2},
-  {num:48,author:"Franceska Guerrero",school:"CCU",topic:"Minimum marriage age 18 — no exceptions",hotness:3},
-  {num:50,author:"Kennedy Kovach",school:"CCU",topic:"Restrict AI in hiring to limit bias",hotness:4},
-  {num:52,author:"Lindsey Margerum",school:"CCU",topic:"Require dual citizenship disclosure on ballots",hotness:4},
-  {num:56,author:"Noah Burgan",school:"CCU",topic:"Free breakfast/lunch at all K-12 public schools",hotness:3},
-  {num:58,author:"Daiveon Glover",school:"FMU",topic:"Update SC public policy on same-sex marriage",hotness:5},
-  {num:59,author:"Ahmad Brown",school:"FMU",topic:"Require nonviolent juveniles to Youth Mentor Program",hotness:2},
-  {num:61,author:"Mary Leslee Moore",school:"FMU",topic:"Remove restrictions on tattoo facility locations",hotness:1},
-  {num:63,author:"Charlotte Sellers",school:"FMU",topic:"Reduce time to file nuisance action against shooting ranges",hotness:3},
-  {num:65,author:"Shay Churba",school:"FMU",topic:"Eliminate penalty for violating US/Confederate/SC flag",hotness:5},
-  {num:67,author:"Charity Turner",school:"FMU",topic:"Regulate PFAS substances in SC waterways",hotness:2},
-  {num:69,author:"Zachary Lingerman",school:"FMU",topic:"Establish ranked-choice voting",hotness:4},
-  {num:72,author:"Connor Denny",school:"FMU",topic:"Remove most restrictions on sawed-off shotguns",hotness:5},
-  {num:76,author:"Nathaniel Roberts",school:"CSU",topic:"Intersection safety / reduce traffic fatalities",hotness:1},
-  {num:79,author:"Kaitlyn Conner",school:"CSU",topic:"Reduce prescription pollution in SC",hotness:2},
-  {num:80,author:"Graycee Dorner",school:"CSU",topic:"Tax exception for small businesses",hotness:2},
-  {num:82,author:"Seth Nolan",school:"CSU",topic:"Prohibit noncompetition covenants",hotness:3},
-  {num:84,author:"Evan Wilson",school:"CSU",topic:"Religious nonprofits build affordable housing",hotness:3},
-  {num:86,author:"Ashley Butler",school:"CSU",topic:"Require calorie info on restaurant menus",hotness:2},
-  {num:88,author:"Jocelyn Lassiter",school:"CSU",topic:"Increase unmarked police cruisers",hotness:3},
-  {num:89,author:"Macie Thomas",school:"CSU",topic:"Expand adults who may file protection order for minor",hotness:1},
-  {num:90,author:"Alex Melgar",school:"PC",topic:"Allow undocumented immigrants driving privilege card",hotness:5},
-  {num:92,author:"Andy Robertson",school:"PC",topic:"School resource officers need prior law enforcement experience",hotness:2},
-  {num:93,author:"Auden Uhl-Banks",school:"PC",topic:"Restructure campaign communication disclaimer requirements",hotness:2},
-  {num:95,author:"Carmelo Robinson",school:"PC",topic:"Prohibit banning books in school libraries",hotness:5},
-  {num:97,author:"Jacob Kerwin",school:"PC",topic:"Allow liquor sales in grocery stores and gas stations",hotness:4},
-  {num:98,author:"Katelynn Ryan",school:"PC",topic:"Free state fitness facilities for US Army members",hotness:1},
-  {num:99,author:"Kayla McCabe",school:"PC",topic:"Prohibit PFAS in food-contact packaging",hotness:2},
-  {num:101,author:"Ladson Porter",school:"PC",topic:"Decriminalize consensual buggery between adults",hotness:5},
-  {num:102,author:"Lana Clayton",school:"PC",topic:"Update policies on avenues for illegal immigrants",hotness:5},
-  {num:105,author:"Michael Cody",school:"PC",topic:"Reduce favoritism in public school teacher hiring",hotness:2},
-  {num:107,author:"Taylor Wooten",school:"PC",topic:"Expand affordable housing near colleges",hotness:3},
-  {num:110,author:"Thatcher Hutton",school:"PC",topic:"Stricter guidelines for release of repeat violent offenders",hotness:3},
-  {num:112,author:"Annika Rauhut",school:"Clemson",topic:"Regulate antidepressant prescriptions by GPs",hotness:3},
-  {num:115,author:"Fiona Tworkowski",school:"Clemson",topic:"Require AI usage in all SC instructional facilities",hotness:4},
-  {num:117,author:"Charley Phy",school:"Clemson",topic:"Allow funeral homes to report deaths to election commission",hotness:1},
-  {num:120,author:"James Pinner",school:"Clemson",topic:"Drivers 65+ must retake driving test every 2 years",hotness:4},
-  {num:122,author:"Ellisen Berry",school:"Clemson",topic:"Restrict alcohol purchase for extreme/repeat DUI offenders",hotness:3},
-  {num:127,author:"Matthew Langton",school:"Clemson",topic:"Allow public school districts to adopt four-day school week",hotness:5},
-  {num:129,author:"Sarah Moorshead",school:"Clemson",topic:"Protect health and wellness of SC children",hotness:2},
-  {num:132,author:"Sarah Herzberg",school:"Clemson",topic:"Free course materials access at public colleges",hotness:2},
-  {num:134,author:"Grayson Alexander",school:"Clemson",topic:"Increase minimum wage annually based on inflation",hotness:4},
-  {num:136,author:"Ava Urban",school:"Clemson",topic:"Privatize SC DMV",hotness:4},
-  {num:139,author:"Peter McLean",school:"Clemson",topic:"Separation of Church and State Act",hotness:5},
-  {num:142,author:"Max Charles",school:"Clemson",topic:"Prohibit private equity from buying single-family homes",hotness:4},
-  {num:144,author:"Walker Green",school:"Clemson",topic:"Protect SCSL executive committee structure",hotness:3},
-  {num:146,author:"Zoey Sapp",school:"Clemson",topic:"Guidelines on child age weight in custodial preference",hotness:2},
-  {num:148,author:"Brooke Kelly",school:"USC",topic:"Encourage responsible family planning (tax code amendment)",hotness:4},
-  {num:153,author:"Chance Kirby",school:"USC",topic:"Create a South Carolina stable coin (cryptocurrency)",hotness:4},
-  {num:159,author:"Clarissa Bues",school:"USC",topic:"Prohibit oil/gas drilling in national wildlife refuges and parks",hotness:4},
-  {num:161,author:"Derrick Wargo",school:"USC",topic:"Create a new legal holiday in SC",hotness:2},
-  {num:163,author:"Derrick Wargo & Brooke Kelly",school:"USC",topic:"Formalize SCSL session host site selection process",hotness:2},
-  {num:165,author:"Doug Ruff",school:"USC",topic:"Require boat/watercraft liability insurance",hotness:1},
-  {num:167,author:"Kaleelah El-Amin",school:"USC",topic:"Ensure children are identified properly re: parentage",hotness:3},
-  {num:168,author:"Lara Glasser",school:"USC",topic:"Strengthen restrictions on shoreline armoring",hotness:2},
-  {num:169,author:"Lester Lewis",school:"USC",topic:"Prohibit new tenure at public universities",hotness:5},
-  {num:170,author:"Max Brabham",school:"USC",topic:"Improve and protect health of SC citizens",hotness:2},
-  {num:172,author:"Meredyth Blake",school:"USC",topic:"Gardening as a high school course elective",hotness:1},
-  {num:173,author:"Nailah Brown",school:"USC",topic:"Statewide literacy improvement for elementary schools",hotness:2},
-  {num:175,author:"Payton Ward",school:"USC",topic:"Require student ID to enter public college campus buildings",hotness:3},
-  {num:177,author:"Reagan Quast",school:"USC",topic:"Provide cultural improvements through circuses",hotness:3},
-  {num:178,author:"Ryan Young",school:"USC",topic:"Increase school immunization requirements",hotness:4},
-  {num:180,author:"Sami Gunter",school:"USC",topic:"Reform drug possession laws / expand rehabilitation",hotness:4},
-  {num:182,author:"Tyler Morgan",school:"USC",topic:"Reform asset forfeiture process and requirements",hotness:3},
-  {num:186,author:"Damien Barber",school:"USC",topic:"Establish motor vehicle safety standards in SC",hotness:2},
-];
+// ==================== BILL DATA (loaded from Firebase/xlsx) ====================
+let BILLS = []; // loaded from Firebase (uploaded via Bill Book tab)
 
 const DEFAULT_SCHEDULE = [
   {day:"Wed",label:"Wednesday AM",start:"10:30",end:"12:30",dayIdx:0},
@@ -714,6 +599,7 @@ const DEFAULT_SCHEDULE = [
 
 let bills = {};
 let schedule = JSON.parse(JSON.stringify(DEFAULT_SCHEDULE));
+let sessionDates = ['','','']; // dates for day 0,1,2
 let whatIfSchedule = JSON.parse(JSON.stringify(DEFAULT_SCHEDULE));
 let adminSearchVal = '';
 let adminFilterVal = 'all';
@@ -721,6 +607,15 @@ let floorTimerStart = null;
 let floorTimerInterval = null;
 let currentBillNum = null;
 let savedSheetsUrl = '';
+let pollInterval = null;
+let pollCountdownInterval = null;
+let pollSecondsLeft = 20;
+let lastSheetSnapshot = {}; // billNum -> status string from last poll
+let changeLog = [];
+
+// xlsx upload state
+let xlsxRows = [];
+let xlsxHeaders = [];
 
 // ==================== AUTH ====================
 const ADMIN_PW_KEY = 'scsl_admin_pw';
@@ -752,10 +647,23 @@ function initFirebase() {
   onValue(ref(db, 'scsl/bills'), (snap) => {
     const data = snap.val();
     if (data) bills = data;
-    else { bills = {}; BILLS.forEach((b,i) => { bills[b.num] = {status:'pending',minutes:null,order:i}; }); }
+    else bills = {};
     renderAdminDocket();
     updateAdminStats();
     updateCurrentBillBanner();
+  });
+
+  onValue(ref(db, 'scsl/billBook'), (snap) => {
+    const data = snap.val();
+    if (data && Array.isArray(data) && data.length > 0) {
+      BILLS = data;
+      showBillBookPreview();
+      document.getElementById('noBillsWarning').style.display = 'none';
+    } else {
+      document.getElementById('noBillsWarning').style.display = 'block';
+    }
+    renderAdminDocket();
+    updateAdminStats();
   });
 
   onValue(ref(db, 'scsl/schedule'), (snap) => {
@@ -763,6 +671,16 @@ function initFirebase() {
     if (data) { schedule = data; whatIfSchedule = JSON.parse(JSON.stringify(data)); }
     renderScheduleEditor();
     renderWhatIfEditor();
+  });
+
+  onValue(ref(db, 'scsl/sessionDates'), (snap) => {
+    const data = snap.val();
+    if (data) {
+      sessionDates = data;
+      if (data[0]) document.getElementById('dateDay0').value = data[0];
+      if (data[1]) document.getElementById('dateDay1').value = data[1];
+      if (data[2]) document.getElementById('dateDay2').value = data[2];
+    }
   });
 
   onValue(ref(db, 'scsl/config/groqKey'), (snap) => {
@@ -776,66 +694,92 @@ function initFirebase() {
       savedSheetsUrl = snap.val();
       document.getElementById('sheetsUrlInput').value = snap.val();
       document.getElementById('sheetsStatus').className = 'sheets-status connected';
-      document.getElementById('sheetsStatus').textContent = '✓ Google Sheets connected';
-      document.getElementById('syncSheetsBtn').style.display = 'block';
+      document.getElementById('sheetsStatus').textContent = '✓ Google Sheets URL saved';
+      document.getElementById('syncSheetsBtn').style.display = 'inline-block';
     }
   });
 }
 
 function saveBill(num) {
   if (!window._firebaseReady) return;
-  const db = window._db, ref = window._ref, set = window._set;
-  set(ref(db, `scsl/bills/${num}`), bills[num]);
+  window._set(window._ref(window._db, `scsl/bills/${num}`), bills[num]);
   showSaveIndicator();
 }
-
 function showSaveIndicator() {
   const el = document.getElementById('saveIndicator');
   el.classList.add('show');
   setTimeout(() => el.classList.remove('show'), 2000);
 }
 
+// ==================== TIME FORMAT ====================
+// Format minutes as H:MM (e.g. 14 -> "0:14", 75 -> "1:15"). Cap at 9:59 display.
+function fmtDuration(mins) {
+  if (!mins || mins <= 0) return '—';
+  const capped = Math.min(mins, 599); // cap at 9:59
+  const h = Math.floor(capped / 60);
+  const m = capped % 60;
+  return `${h}:${m.toString().padStart(2,'0')}`;
+}
+
+// Calculate minutes from startTime/endTime strings "HH:MM"
+function calcMinutesFromTimes(start, end) {
+  if (!start || !end) return null;
+  const [sh,sm] = start.split(':').map(Number);
+  const [eh,em] = end.split(':').map(Number);
+  const diff = (eh*60+em) - (sh*60+sm);
+  return diff > 0 ? diff : null;
+}
+
 // ==================== ADMIN DOCKET ====================
 function renderAdminDocket() {
   const tbody = document.getElementById('adminDocketBody');
+  if (BILLS.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:24px;font-family:var(--font-mono);font-size:0.8rem">No bills loaded — upload your bill book in the Bill Book tab</td></tr>';
+    return;
+  }
+
   let filtered = BILLS.map(b => ({...b, ...(bills[b.num]||{status:'pending',minutes:null})}));
 
-  if (adminFilterVal !== 'all') filtered = filtered.filter(b => {
-    const s = normalizeStatus(b.status);
-    return s === adminFilterVal;
-  });
+  if (adminFilterVal !== 'all') filtered = filtered.filter(b => normalizeStatus(b.status) === adminFilterVal);
   if (adminSearchVal) {
     const q = adminSearchVal.toLowerCase();
     filtered = filtered.filter(b =>
-      b.num.toString().includes(q) ||
-      b.topic.toLowerCase().includes(q) ||
-      b.author.toLowerCase().includes(q) ||
-      b.school.toLowerCase().includes(q)
+      String(b.num).includes(q) ||
+      (b.topic||b.purpose||'').toLowerCase().includes(q) ||
+      (b.author||'').toLowerCase().includes(q) ||
+      (b.school||b.delegation||'').toLowerCase().includes(q)
     );
   }
 
   tbody.innerHTML = filtered.map(b => {
     const bData = bills[b.num] || {status:'pending',minutes:null};
     const ns = normalizeStatus(bData.status);
-    const dots = Array.from({length:5},(_,i)=>`<div class="hd${i<b.hotness?' filled'+(b.hotness>=4?' hi':''):''}"></div>`).join('');
-
+    const hotness = b.hotness || 1;
+    const dots = Array.from({length:5},(_,i)=>`<div class="hd${i<hotness?' filled'+(hotness>=4?' hi':''):''}"></div>`).join('');
     const statuses = ['pending','in-progress','passed','failed','tabled','tabled-indefinitely'];
     const labels = ['Pending','🔴 Floor','✅ Pass','❌ Fail','⏸ Table','🚫 Indef.'];
     const btns = statuses.map((s,i) => `<button class="sbtn${ns===s?' active-'+s:''}" onclick="setBillStatus(${b.num},'${s}')">${labels[i]}</button>`).join('');
 
-    const minVal = bData.minutes || '';
+    // Duration: prefer calculated from start/end times, fallback to minutes field
+    let displayMins = bData.minutes;
+    const calcMins = calcMinutesFromTimes(bData.startTime, bData.endTime);
+    if (calcMins) displayMins = calcMins;
+    const dur = fmtDuration(displayMins);
+
     const startVal = bData.startTime || '';
     const endVal = bData.endTime || '';
     const voteVal = bData.voteCount || '';
 
+    const topic = b.topic || b.purpose || b.purposeStatement || '';
+
     return `<tr class="${ns==='in-progress'?'current-row':''}">
       <td><span class="bill-num">#${b.num}</span></td>
-      <td style="font-size:0.77rem;white-space:nowrap"><div>${b.author}</div><div style="color:var(--text3);font-family:var(--font-mono);font-size:0.68rem">${b.school}</div></td>
-      <td><div class="bill-topic-short" title="${b.topic}">${b.topic}</div></td>
+      <td style="font-size:0.77rem;white-space:nowrap"><div>${b.author||''}</div><div style="color:var(--text3);font-family:var(--font-mono);font-size:0.68rem">${b.school||b.delegation||''}</div></td>
+      <td><div class="bill-topic-short" title="${topic.replace(/"/g,'&quot;')}">${topic}</div></td>
       <td><div class="hotness-indicator">${dots}</div></td>
       <td><div class="status-btns">${btns}</div></td>
       <td><input type="text" class="min-input" value="${voteVal}" placeholder="—" onchange="setBillVote(${b.num},this.value)" title="Vote count (e.g. 12-5)"></td>
-      <td><input type="number" class="min-input" value="${minVal}" placeholder="—" min="1" max="180" onchange="setBillMinutes(${b.num},this.value)" title="Minutes on floor"></td>
+      <td style="font-family:var(--font-mono);font-size:0.82rem;color:var(--gold);min-width:46px">${dur}</td>
       <td><input type="time" class="time-edit-input" value="${startVal}" onchange="setBillTime(${b.num},'startTime',this.value)" title="Floor start time"></td>
       <td><input type="time" class="time-edit-input" value="${endVal}" onchange="setBillTime(${b.num},'endTime',this.value)" title="Floor end time"></td>
     </tr>`;
@@ -844,35 +788,36 @@ function renderAdminDocket() {
 
 function normalizeStatus(s) {
   if (!s) return 'pending';
-  const sl = s.toLowerCase().replace(/ /g,'-');
-  if (sl === 'current' || sl === 'in-progress' || sl === 'in progress') return 'in-progress';
-  if (sl === 'tabled-indefinitely' || sl === 'tabled indefinitely') return 'tabled-indefinitely';
-  return sl;
+  const sl = s.toLowerCase().trim().replace(/ /g,'-');
+  if (sl==='current'||sl==='in-progress'||sl==='in progress'||sl==='in-progress') return 'in-progress';
+  if (sl==='tabled-indefinitely'||sl==='tabled indefinitely') return 'tabled-indefinitely';
+  if (sl==='passed'||sl==='pass') return 'passed';
+  if (sl==='failed'||sl==='fail') return 'failed';
+  if (sl==='tabled') return 'tabled';
+  return 'pending';
 }
 
 function setBillStatus(num, status) {
   if (!bills[num]) bills[num] = {status:'pending',minutes:null,order:0};
+  const prev = normalizeStatus(bills[num].status);
   bills[num].status = status;
 
   if (status === 'in-progress') {
+    // End previous in-progress if any
+    if (currentBillNum && currentBillNum !== num) {
+      endCurrentBill(currentBillNum);
+    }
     currentBillNum = num;
+    floorTimerStart = Date.now();
     if (!bills[num].startTime) {
       const now = new Date();
       bills[num].startTime = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
     }
-    floorTimerStart = Date.now();
     if (floorTimerInterval) clearInterval(floorTimerInterval);
     floorTimerInterval = setInterval(updateFloorTimer, 1000);
-  } else if (currentBillNum === num) {
-    if (floorTimerStart) {
-      const now = new Date();
-      bills[num].endTime = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-      const elapsed = Math.round((Date.now()-floorTimerStart)/60000);
-      if (elapsed > 0 && !bills[num].minutes) bills[num].minutes = elapsed;
-    }
-    currentBillNum = null;
-    floorTimerStart = null;
-    if (floorTimerInterval) { clearInterval(floorTimerInterval); floorTimerInterval = null; }
+    document.getElementById('timerSource').textContent = 'manual';
+  } else if (prev === 'in-progress' || currentBillNum === num) {
+    endCurrentBill(num);
   }
 
   saveBill(num);
@@ -881,52 +826,64 @@ function setBillStatus(num, status) {
   updateCurrentBillBanner();
 }
 
-function setBillMinutes(num, val) {
-  const mins = parseInt(val);
-  if (!isNaN(mins) && mins > 0) {
-    if (!bills[num]) bills[num] = {status:'pending',minutes:null,order:0};
-    bills[num].minutes = mins;
-    saveBill(num);
+function endCurrentBill(num) {
+  if (floorTimerStart && (!bills[num].endTime)) {
+    const now = new Date();
+    bills[num].endTime = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+    const elapsed = Math.round((Date.now()-floorTimerStart)/60000);
+    if (elapsed > 0 && !bills[num].minutes) bills[num].minutes = elapsed;
   }
-}
-function setBillVote(num, val) {
-  if (!bills[num]) bills[num] = {status:'pending',minutes:null,order:0};
-  bills[num].voteCount = val.trim();
-  saveBill(num);
-}
-function setBillTime(num, field, val) {
-  if (!bills[num]) bills[num] = {status:'pending',minutes:null,order:0};
-  bills[num][field] = val;
-  // Auto-calculate minutes if both times set
-  if (bills[num].startTime && bills[num].endTime) {
-    const [sh,sm] = bills[num].startTime.split(':').map(Number);
-    const [eh,em] = bills[num].endTime.split(':').map(Number);
-    const diff = (eh*60+em)-(sh*60+sm);
-    if (diff > 0) bills[num].minutes = diff;
+  if (currentBillNum === num) {
+    currentBillNum = null;
+    floorTimerStart = null;
+    if (floorTimerInterval) { clearInterval(floorTimerInterval); floorTimerInterval = null; }
   }
-  saveBill(num);
-  renderAdminDocket(); // refresh to show auto-calculated minutes
 }
 
 function updateFloorTimer() {
   if (!floorTimerStart) return;
   const elapsed = Math.floor((Date.now()-floorTimerStart)/1000);
-  const mins = Math.floor(elapsed/60), secs = elapsed%60;
+  const mins = Math.floor(elapsed/60);
+  const secs = elapsed%60;
   document.getElementById('floorTimer').textContent = `${mins}:${secs.toString().padStart(2,'0')}`;
 }
 
 function updateCurrentBillBanner() {
   const banner = document.getElementById('currentBillBanner');
-  const currentBills = BILLS.filter(b => normalizeStatus((bills[b.num]||{}).status)==='in-progress');
-  if (currentBills.length > 0) {
-    const b = currentBills[0];
-    document.getElementById('currentBillName').textContent = `Bill #${b.num}: ${b.topic}`;
+  const cur = BILLS.find(b => normalizeStatus((bills[b.num]||{}).status)==='in-progress');
+  if (cur) {
+    const topic = cur.topic||cur.purpose||cur.purposeStatement||'';
+    document.getElementById('currentBillName').textContent = `Bill #${cur.num}: ${topic}`;
     banner.style.display = 'flex';
-    if (!floorTimerStart) { floorTimerStart = Date.now(); floorTimerInterval = setInterval(updateFloorTimer, 1000); }
+    if (!floorTimerStart && !floorTimerInterval) {
+      floorTimerStart = Date.now();
+      floorTimerInterval = setInterval(updateFloorTimer, 1000);
+    }
   } else {
     banner.style.display = 'none';
     if (floorTimerInterval) { clearInterval(floorTimerInterval); floorTimerInterval = null; }
   }
+}
+
+function setBillMinutes(num, val) {
+  const m = parseInt(val);
+  if (!bills[num]) bills[num] = {status:'pending',order:0};
+  if (!isNaN(m) && m > 0) bills[num].minutes = m;
+  saveBill(num);
+}
+function setBillVote(num, val) {
+  if (!bills[num]) bills[num] = {status:'pending',order:0};
+  bills[num].voteCount = val;
+  saveBill(num);
+}
+function setBillTime(num, field, val) {
+  if (!bills[num]) bills[num] = {status:'pending',order:0};
+  bills[num][field] = val;
+  // Auto-calc minutes if both times set
+  const calc = calcMinutesFromTimes(bills[num].startTime, bills[num].endTime);
+  if (calc) bills[num].minutes = calc;
+  saveBill(num);
+  renderAdminDocket(); // refresh duration display
 }
 
 function adminFilter() {
@@ -937,20 +894,30 @@ function adminFilter() {
 
 function updateAdminStats() {
   const counts = {pending:0,'in-progress':0,passed:0,failed:0,tabled:0,'tabled-indefinitely':0};
-  BILLS.forEach(b => { const s = normalizeStatus((bills[b.num]||{}).status||'pending'); counts[s]=(counts[s]||0)+1; });
+  BILLS.forEach(b => {
+    const s = normalizeStatus((bills[b.num]||{}).status);
+    counts[s] = (counts[s]||0)+1;
+  });
   const done = counts.passed + counts.failed;
+  const total = BILLS.length;
   document.getElementById('adminStats').innerHTML = `
     <div class="mini-stat"><div class="mini-stat-val" style="color:var(--green)">${counts.passed}</div><div class="mini-stat-label">Passed</div></div>
     <div class="mini-stat"><div class="mini-stat-val" style="color:var(--red)">${counts.failed}</div><div class="mini-stat-label">Failed</div></div>
     <div class="mini-stat"><div class="mini-stat-val" style="color:var(--gold)">${counts.tabled}</div><div class="mini-stat-label">Tabled</div></div>
-    <div class="mini-stat"><div class="mini-stat-val" style="color:var(--muted)">${counts['tabled-indefinitely']}</div><div class="mini-stat-label">Tbl. Indef.</div></div>
+    <div class="mini-stat"><div class="mini-stat-val" style="color:var(--muted)">${counts['tabled-indefinitely']}</div><div class="mini-stat-label">Indef.</div></div>
     <div class="mini-stat"><div class="mini-stat-val" style="color:var(--sky)">${counts.pending}</div><div class="mini-stat-label">Pending</div></div>
     <div class="mini-stat"><div class="mini-stat-val" style="color:var(--orange)">${counts['in-progress']}</div><div class="mini-stat-label">On Floor</div></div>
-    <div class="mini-stat"><div class="mini-stat-val">${Math.round(done/78*100)}%</div><div class="mini-stat-label">Complete</div></div>
+    <div class="mini-stat"><div class="mini-stat-val">${total > 0 ? Math.round(done/total*100) : 0}%</div><div class="mini-stat-label">Complete</div></div>
   `;
 }
 
-// ==================== SCHEDULE EDITOR ====================
+// ==================== SCHEDULE ====================
+function parseTime(str) { const [h,m]=str.split(':').map(Number); return h*60+m; }
+function calcDur(start, end) {
+  const m = parseTime(end)-parseTime(start);
+  return m > 0 ? `${Math.floor(m/60)}h ${m%60}m` : '—';
+}
+
 function renderScheduleEditor() {
   const el = document.getElementById('scheduleEditor');
   el.innerHTML = schedule.map((s,i) => `
@@ -970,15 +937,10 @@ function renderScheduleEditor() {
   updateScheduleTotals();
 }
 
-function calcDur(start, end) {
-  const m = parseTime(end)-parseTime(start);
-  return m > 0 ? `${Math.floor(m/60)}h ${m%60}m` : '—';
-}
-function parseTime(str) { const [h,m]=str.split(':').map(Number); return h*60+m; }
-
 function updateScheduleTime(idx, field, val) {
   schedule[idx][field] = val;
-  document.getElementById(`schDur${idx}`).textContent = calcDur(schedule[idx].start, schedule[idx].end);
+  const el = document.getElementById(`schDur${idx}`);
+  if (el) el.textContent = calcDur(schedule[idx].start, schedule[idx].end);
   updateScheduleTotals();
 }
 function updateScheduleTotals() {
@@ -989,15 +951,22 @@ function updateScheduleTotals() {
 function saveSchedule() {
   if (!window._firebaseReady) return showToast('Firebase not ready');
   window._set(window._ref(window._db, 'scsl/schedule'), schedule);
-  showToast('Schedule saved to Firebase!');
+  window._set(window._ref(window._db, 'scsl/sessionDates'), sessionDates);
+  showToast('Schedule & dates saved!');
   showSaveIndicator();
+}
+function saveDates() {
+  sessionDates[0] = document.getElementById('dateDay0').value;
+  sessionDates[1] = document.getElementById('dateDay1').value;
+  sessionDates[2] = document.getElementById('dateDay2').value;
+  if (window._firebaseReady) window._set(window._ref(window._db, 'scsl/sessionDates'), sessionDates);
 }
 
 // ==================== WHAT-IF ====================
 function renderWhatIfEditor() {
   whatIfSchedule = JSON.parse(JSON.stringify(schedule));
   const el = document.getElementById('whatIfScheduleEditor');
-  el.innerHTML = `<div style="display:grid;gap:9px;margin-bottom:14px">` +
+  el.innerHTML = `<div style="display:grid;gap:10px;margin-bottom:16px">` +
     whatIfSchedule.map((s,i) => `
     <div class="sched-row">
       <div class="sched-label">${s.label}</div>
@@ -1014,29 +983,25 @@ function renderWhatIfEditor() {
   `).join('') + `</div>`;
   recalcWhatIf();
 }
-
 function updateWhatIf(idx, field, val) {
   whatIfSchedule[idx][field] = val;
   recalcWhatIf();
 }
-
 function recalcWhatIf() {
   const avgMin = parseFloat(document.getElementById('wiAvgMin').value) || 12;
-  const billsLeft = parseInt(document.getElementById('wiBillsLeft').value) || 78;
-  const hotFraction = BILLS.filter(b=>b.hotness>=4).length / BILLS.length;
+  const billsLeft = parseInt(document.getElementById('wiBillsLeft').value) || BILLS.length || 78;
+  const hotFraction = BILLS.length > 0 ? BILLS.filter(b=>b.hotness>=4).length / BILLS.length : 0.33;
   let timeNeeded = 0;
   for (let i = 0; i < billsLeft; i++) {
     const isHot = (i / billsLeft) < hotFraction;
     timeNeeded += isHot ? avgMin * 1.35 : avgMin;
   }
   timeNeeded += whatIfSchedule.length * 5;
-
   const result = projectEndTimeWI(timeNeeded, whatIfSchedule);
   document.getElementById('wiEndTime').textContent = result.timeStr;
   document.getElementById('wiEndDay').textContent = result.dayStr;
   document.getElementById('wiDetails').textContent = `~${Math.round(timeNeeded)} min needed · ${(timeNeeded/60).toFixed(1)} hrs · ${billsLeft} bills × ${avgMin} min avg`;
 }
-
 function projectEndTimeWI(minutesNeeded, sched) {
   const dayNames = ['Wednesday','Thursday','Friday'];
   let minsLeft = minutesNeeded;
@@ -1045,109 +1010,385 @@ function projectEndTimeWI(minutesNeeded, sched) {
     const dur = parseTime(s.end)-parseTime(s.start);
     if (minsLeft <= dur) {
       const endMins = parseTime(s.start)+minsLeft;
-      const h = Math.floor(endMins/60)%24, m = endMins%60;
-      const ampm = h>=12?'PM':'AM';
-      const h12 = h>12?h-12:(h===0?12:h);
-      return { timeStr:`${h12}:${m.toString().padStart(2,'0')} ${ampm}`, dayStr: dayNames[s.dayIdx]||'' };
+      const h=Math.floor(endMins/60)%24, m=endMins%60;
+      const ampm=h>=12?'PM':'AM', h12=h>12?h-12:(h===0?12:h);
+      // Show actual date if available
+      const dateStr = sessionDates[s.dayIdx] ? ` (${formatDate(sessionDates[s.dayIdx])})` : '';
+      return { timeStr:`${h12}:${m.toString().padStart(2,'0')} ${ampm}`, dayStr:`${dayNames[s.dayIdx]}${dateStr}` };
     }
     minsLeft -= dur;
   }
   return { timeStr:"Over Schedule", dayStr:"Beyond floor time" };
 }
-
-// ==================== SETTINGS ====================
-function saveGroqKey() {
-  if (!window._firebaseReady) return showToast('Firebase not ready');
-  const key = document.getElementById('groqKeyInput').value.trim();
-  if (!key || key.includes('•')) return showToast('Enter a valid key');
-  window._set(window._ref(window._db, 'scsl/config/groqKey'), key);
-  showToast('Groq API key saved to Firebase!');
-  document.getElementById('groqKeyInput').value = '••••••••••••••••';
+function formatDate(d) {
+  if (!d) return '';
+  const dt = new Date(d+'T12:00:00');
+  return dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});
 }
 
-function saveNotes() {
-  if (!window._firebaseReady) return showToast('Firebase not ready');
-  const notes = document.getElementById('sessionNotes').value;
-  window._set(window._ref(window._db, 'scsl/config/sessionNotes'), notes);
-  showToast('Notes saved!');
+// ==================== BILL BOOK UPLOAD ====================
+function handleXlsxDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) handleXlsxFile(file);
 }
 
-async function connectSheets() {
+function handleXlsxFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const wb = XLSX.read(data, {type:'array'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+      if (rows.length < 2) return showToast('Sheet appears empty');
+
+      xlsxHeaders = rows[0].map(h => String(h).trim());
+      xlsxRows = rows.slice(1).filter(r => r.some(c => c !== ''));
+
+      showColMapper();
+    } catch(err) {
+      showToast('Error reading file: ' + err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function showColMapper() {
+  const section = document.getElementById('colMapSection');
+  const grid = document.getElementById('colMapGrid');
+  section.style.display = 'block';
+
+  // Auto-detect columns
+  const colFields = [
+    {key:'num', label:'Bill No. *', hints:['bill no','bill#','billno','bill num','no.','#']},
+    {key:'author', label:'Bill Author *', hints:['author','delegate','presenter','name']},
+    {key:'school', label:'Delegation *', hints:['delegation','school','college','university','institution']},
+    {key:'topic', label:'Purpose Statement *', hints:['purpose','topic','bill','statement','description']},
+    {key:'hotness', label:'Hotness (1-5, optional)', hints:['hotness','heat','controversy','hot','priority']},
+  ];
+
+  const autoDetect = (hints) => {
+    for (const hint of hints) {
+      const idx = xlsxHeaders.findIndex(h => h.toLowerCase().replace(/[^a-z]/g,'').includes(hint.replace(/[^a-z]/g,'')));
+      if (idx !== -1) return idx;
+    }
+    return -1;
+  };
+
+  grid.innerHTML = colFields.map(f => {
+    const detected = autoDetect(f.hints);
+    const opts = xlsxHeaders.map((h,i) => `<option value="${i}" ${i===detected?'selected':''}>${h}</option>`).join('');
+    return `<div class="col-map-item">
+      <label>${f.label}</label>
+      <select id="col_${f.key}">
+        <option value="-1">— Skip —</option>
+        ${opts}
+      </select>
+    </div>`;
+  }).join('');
+}
+
+function autoHotness(topic) {
+  const t = (topic||'').toLowerCase();
+  const h5 = ['gun','firearm','weapon','marriage','same.sex','immigration','immigrant','abortion','buggery','flag','tenure','school week'];
+  const h4 = ['drug','alcohol','liquor','police','law enforcement','minimum wage','ai ','artificial intel','dmv','private equity','book ban','book.ban','climate','drill'];
+  const h3 = ['tax','healthcare','voting','rank','medical','religion','church'];
+  for (const kw of h5) if (new RegExp(kw).test(t)) return 5;
+  for (const kw of h4) if (new RegExp(kw).test(t)) return 4;
+  for (const kw of h3) if (new RegExp(kw).test(t)) return 3;
+  return 2;
+}
+
+function importBillBook() {
+  const getCol = (key) => parseInt(document.getElementById(`col_${key}`)?.value ?? '-1');
+  const numCol = getCol('num');
+  const authCol = getCol('author');
+  const schoolCol = getCol('school');
+  const topicCol = getCol('topic');
+  const hotnessCol = getCol('hotness');
+
+  if (numCol < 0 || authCol < 0 || schoolCol < 0 || topicCol < 0) {
+    return showToast('Please map Bill No., Author, Delegation, and Purpose Statement');
+  }
+
+  const imported = [];
+  xlsxRows.forEach((row, i) => {
+    const num = parseInt(String(row[numCol]||'').replace(/\D/g,''));
+    if (!num) return;
+    const author = String(row[authCol]||'').trim();
+    const school = String(row[schoolCol]||'').trim();
+    const topic = String(row[topicCol]||'').trim();
+    let hotness = hotnessCol >= 0 ? parseInt(row[hotnessCol]) : NaN;
+    if (isNaN(hotness) || hotness < 1 || hotness > 5) hotness = autoHotness(topic);
+    imported.push({ num, author, school, topic, hotness, order: i });
+  });
+
+  if (imported.length === 0) return showToast('No valid bills found — check column mapping');
+
+  BILLS = imported;
+  if (window._firebaseReady) {
+    window._set(window._ref(window._db, 'scsl/billBook'), BILLS);
+  }
+  document.getElementById('colMapSection').style.display = 'none';
+  document.getElementById('noBillsWarning').style.display = 'none';
+  showBillBookPreview();
+  renderAdminDocket();
+  updateAdminStats();
+  // Update what-if bills remaining
+  document.getElementById('wiBillsLeft').value = BILLS.length;
+  showToast(`✓ Imported ${BILLS.length} bills from spreadsheet`);
+  document.getElementById('billBookStatus').textContent = `${BILLS.length} bills loaded`;
+}
+
+function showBillBookPreview() {
+  const preview = document.getElementById('uploadPreview');
+  const table = document.getElementById('previewTable');
+  preview.style.display = 'block';
+  document.getElementById('previewTitle').textContent = `${BILLS.length} Bills Loaded`;
+
+  const hotnessColor = (h) => h>=5?'var(--red)':h>=4?'var(--orange)':h>=3?'var(--gold)':'var(--text3)';
+
+  table.innerHTML = `<thead><tr>
+    <th>#</th><th>Author</th><th>School</th><th>Purpose Statement</th><th>Heat</th>
+  </tr></thead><tbody>` +
+  BILLS.slice(0,20).map(b=>`<tr>
+    <td style="font-family:var(--font-mono);color:var(--sky);font-weight:600">#${b.num}</td>
+    <td>${b.author}</td>
+    <td style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text3)">${b.school}</td>
+    <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(b.topic||'').replace(/"/g,'&quot;')}">${b.topic||''}</td>
+    <td><span class="hotness-badge" style="color:${hotnessColor(b.hotness)};background:rgba(255,255,255,0.05)">${b.hotness}/5</span></td>
+  </tr>`).join('') +
+  (BILLS.length > 20 ? `<tr><td colspan="5" style="text-align:center;color:var(--text3);font-family:var(--font-mono);font-size:0.72rem;padding:10px">… and ${BILLS.length-20} more bills</td></tr>` : '') +
+  '</tbody>';
+}
+
+function clearBillBook() {
+  if (!confirm('Remove the current bill book? You can re-upload anytime.')) return;
+  BILLS = [];
+  if (window._firebaseReady) window._set(window._ref(window._db, 'scsl/billBook'), null);
+  document.getElementById('uploadPreview').style.display = 'none';
+  document.getElementById('colMapSection').style.display = 'none';
+  document.getElementById('noBillsWarning').style.display = 'block';
+  document.getElementById('billBookStatus').textContent = 'No file loaded';
+  renderAdminDocket();
+  updateAdminStats();
+  showToast('Bill book cleared');
+}
+function cancelUpload() {
+  document.getElementById('colMapSection').style.display = 'none';
+  xlsxRows = []; xlsxHeaders = [];
+}
+
+// ==================== GOOGLE SHEETS AUTO-SYNC (TSV) ====================
+// Key insight: poll TSV every 20s, detect status changes, auto-timestamp
+
+function connectSheets() {
   const url = document.getElementById('sheetsUrlInput').value.trim();
-  if (!url) return showToast('Enter a Google Sheets CSV URL');
-  await doSheetSync(url);
-  if (window._firebaseReady) window._set(window._ref(window._db, 'scsl/config/sheetsUrl'), url);
+  if (!url) return showToast('Enter a Google Sheets TSV URL');
   savedSheetsUrl = url;
-  document.getElementById('syncSheetsBtn').style.display = 'block';
+  if (window._firebaseReady) window._set(window._ref(window._db, 'scsl/config/sheetsUrl'), url);
+  startAutoSync();
 }
 
-async function syncSheets() {
-  if (!savedSheetsUrl) return showToast('No Google Sheets URL configured');
-  await doSheetSync(savedSheetsUrl);
+function startAutoSync() {
+  if (pollInterval) clearInterval(pollInterval);
+  if (pollCountdownInterval) clearInterval(pollCountdownInterval);
+
+  document.getElementById('sheetsStatus').className = 'sheets-status polling';
+  document.getElementById('sheetsStatus').textContent = '🔄 Auto-syncing…';
+  document.getElementById('pollIndicator').style.display = 'flex';
+  document.getElementById('syncSheetsBtn').style.display = 'inline-block';
+  document.getElementById('stopSyncBtn').style.display = 'inline-block';
+  document.getElementById('changeLogSection').style.display = 'block';
+
+  // Immediate first poll (build baseline)
+  doSheetPoll(true);
+
+  // Then every 20s
+  pollInterval = setInterval(() => doSheetPoll(false), 20000);
+
+  // Countdown display
+  pollSecondsLeft = 20;
+  pollCountdownInterval = setInterval(() => {
+    pollSecondsLeft--;
+    if (pollSecondsLeft <= 0) pollSecondsLeft = 20;
+    document.getElementById('pollCountdown').textContent = `next in ${pollSecondsLeft}s`;
+  }, 1000);
 }
 
-async function doSheetSync(url) {
+function syncSheets() {
+  doSheetPoll(false);
+  pollSecondsLeft = 20;
+}
+
+function stopAutoSync() {
+  if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+  if (pollCountdownInterval) { clearInterval(pollCountdownInterval); pollCountdownInterval = null; }
+  document.getElementById('pollIndicator').style.display = 'none';
+  document.getElementById('stopSyncBtn').style.display = 'none';
+  document.getElementById('sheetsStatus').className = 'sheets-status connected';
+  document.getElementById('sheetsStatus').textContent = '✓ Auto-sync stopped — Google Sheets connected';
+  showToast('Auto-sync stopped');
+}
+
+async function doSheetPoll(isBaseline) {
+  if (!savedSheetsUrl) return;
   try {
+    // Add cache-buster to force fresh fetch
+    const url = savedSheetsUrl + (savedSheetsUrl.includes('?') ? '&' : '?') + '_t=' + Date.now();
     const resp = await fetch(url);
-    if (!resp.ok) throw new Error('Could not fetch sheet — check the URL');
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const text = await resp.text();
-    const lines = text.split('\n');
+
+    // Parse TSV — no comma problems!
+    const lines = text.split('\n').filter(l => l.trim());
     if (lines.length < 2) throw new Error('Sheet appears empty');
 
-    // Parse header to find column indices
-    const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/[^a-z0-9]/g,''));
-    const col = (names) => {
-      for (const n of names) {
-        const idx = headers.findIndex(h => h.includes(n));
+    const headers = lines[0].split('\t').map(h => h.trim());
+    const col = (hints) => {
+      for (const hint of hints) {
+        const idx = headers.findIndex(h => h.toLowerCase().replace(/[^a-z0-9]/g,'').includes(hint.replace(/[^a-z]/g,'')));
         if (idx !== -1) return idx;
       }
       return -1;
     };
-    const billNumCol = col(['billno','bill']);
+
+    const billNumCol = col(['billno','bill#','bill']);
     const statusCol = col(['status']);
-    const voteCol = col(['votecount','vote']);
+    const voteCol = col(['votecount','vote','votes']);
 
-    if (billNumCol === -1 || statusCol === -1) throw new Error('Could not find Bill No. or Status columns');
+    if (billNumCol < 0 || statusCol < 0) throw new Error('Could not find Bill No. or Status columns in sheet');
 
-    let updated = 0;
+    const currentSnapshot = {};
+    let updatedCount = 0;
+
     lines.slice(1).forEach(line => {
-      if (!line.trim()) return;
-      const cols = line.split(',');
-      const numRaw = cols[billNumCol]?.trim();
+      const cols = line.split('\t');
+      const numRaw = (cols[billNumCol]||'').trim();
       if (!numRaw) return;
       const num = parseInt(numRaw.replace(/\D/g,''));
-      if (!num || !BILLS.find(b=>b.num===num)) return;
+      if (!num) return;
 
       const rawStatus = (cols[statusCol]||'').trim();
-      if (!rawStatus) return;
-      const ns = normalizeStatus(rawStatus);
-      if (!bills[num]) bills[num] = {status:'pending',minutes:null,order:0};
-      bills[num].status = ns;
+      currentSnapshot[num] = rawStatus;
 
-      if (voteCol !== -1 && cols[voteCol]?.trim()) bills[num].voteCount = cols[voteCol].trim();
-      updated++;
+      if (isBaseline) return; // just build snapshot, don't update
+
+      const ns = normalizeStatus(rawStatus);
+      const prevRaw = lastSheetSnapshot[num] || '';
+      const prevNs = normalizeStatus(prevRaw);
+
+      if (ns === prevNs) return; // no change
+
+      // === CHANGE DETECTED ===
+      if (!bills[num]) bills[num] = {status:'pending',minutes:null,order:0};
+      const now = new Date();
+      const nowStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+
+      // AUTO-TIMING LOGIC:
+      // If something was "in-progress" and now changes to terminal status -> record end time
+      if (prevNs === 'in-progress' && (ns === 'passed' || ns === 'failed' || ns === 'tabled' || ns === 'tabled-indefinitely')) {
+        bills[num].endTime = nowStr;
+        // Calculate duration from start time
+        const calcMins = calcMinutesFromTimes(bills[num].startTime, bills[num].endTime);
+        if (calcMins) bills[num].minutes = calcMins;
+        logChange(num, prevNs, ns, `ended at ${nowStr}, duration: ${fmtDuration(bills[num].minutes)}`);
+      }
+      // If status changes from pending/blank to in-progress -> record start time
+      else if ((prevNs === 'pending' || !prevRaw) && ns === 'in-progress') {
+        bills[num].startTime = nowStr;
+        bills[num].endTime = '';
+        logChange(num, prevNs, ns, `started at ${nowStr}`);
+      }
+      // If status goes directly from pending to terminal (no in-progress step) -> record end time
+      else if ((prevNs === 'pending' || !prevRaw) && (ns === 'passed' || ns === 'failed' || ns === 'tabled' || ns === 'tabled-indefinitely')) {
+        // We don't have a start time for this one — mark end only
+        bills[num].endTime = nowStr;
+        logChange(num, prevNs, ns, `completed at ${nowStr} (no start time recorded)`);
+      }
+      else {
+        logChange(num, prevNs, ns, '');
+      }
+
+      bills[num].status = ns;
+      if (voteCol >= 0 && cols[voteCol]?.trim()) bills[num].voteCount = cols[voteCol].trim();
+
+      window._set(window._ref(window._db, `scsl/bills/${num}`), bills[num]);
+      updatedCount++;
     });
 
-    if (window._firebaseReady) window._set(window._ref(window._db, 'scsl/bills'), bills);
-    document.getElementById('sheetsStatus').className = 'sheets-status connected';
-    document.getElementById('sheetsStatus').textContent = `✓ Synced — ${updated} bills updated from Google Sheets (${new Date().toLocaleTimeString()})`;
-    showToast(`✓ Imported ${updated} bill statuses from Google Sheets`);
-    renderAdminDocket();
-    updateAdminStats();
+    lastSheetSnapshot = currentSnapshot;
+
+    if (isBaseline) {
+      document.getElementById('sheetsStatus').className = 'sheets-status polling';
+      document.getElementById('sheetsStatus').textContent = `🔄 Monitoring ${Object.keys(currentSnapshot).length} bills — auto-syncing every 20s`;
+      showToast(`✓ Connected — monitoring ${Object.keys(currentSnapshot).length} bills`);
+    } else if (updatedCount > 0) {
+      renderAdminDocket();
+      updateAdminStats();
+      updateCurrentBillBanner();
+      showToast(`📊 ${updatedCount} bill${updatedCount>1?'s':''} updated from Google Sheets`);
+    }
+
   } catch(e) {
-    showToast(`❌ Sync error: ${e.message}`);
+    document.getElementById('sheetsStatus').className = 'sheets-status disconnected';
+    document.getElementById('sheetsStatus').textContent = `⚠ Sync error: ${e.message}`;
+    console.error('Sheet poll error:', e);
   }
 }
 
+function logChange(billNum, from, to, note) {
+  const bill = BILLS.find(b=>b.num===billNum);
+  const topic = bill ? (bill.topic||bill.purpose||'').substring(0,40)+'…' : `Bill #${billNum}`;
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  const entry = { time: timeStr, num: billNum, topic, from, to, note };
+  changeLog.unshift(entry);
+  if (changeLog.length > 50) changeLog.pop();
+  renderChangeLog();
+}
+
+function renderChangeLog() {
+  const el = document.getElementById('changeLog');
+  if (changeLog.length === 0) {
+    el.innerHTML = '<div class="change-item" style="color:var(--text3)">No changes detected yet…</div>';
+    return;
+  }
+  const statusIcon = {pending:'⬜','in-progress':'🔴',passed:'✅',failed:'❌',tabled:'⏸','tabled-indefinitely':'🚫'};
+  el.innerHTML = changeLog.map(c => `
+    <div class="change-item">
+      <span class="change-time">${c.time}</span>
+      <span class="change-bill">#${c.num}</span>
+      <span class="change-desc">${statusIcon[c.from]||'?'} → ${statusIcon[c.to]||'?'} ${c.to} ${c.note ? '· '+c.note : ''}</span>
+    </div>
+  `).join('');
+}
+
+// ==================== SETTINGS ====================
+function saveGroqKey() {
+  const key = document.getElementById('groqKeyInput').value.trim();
+  if (!key || key.includes('•')) return showToast('Enter a valid key');
+  if (!window._firebaseReady) return showToast('Firebase not ready');
+  window._set(window._ref(window._db, 'scsl/config/groqKey'), key);
+  showToast('Groq API key saved!');
+  document.getElementById('groqKeyInput').value = '••••••••••••••••';
+}
+function saveNotes() {
+  if (!window._firebaseReady) return showToast('Firebase not ready');
+  window._set(window._ref(window._db, 'scsl/config/sessionNotes'), document.getElementById('sessionNotes').value);
+  showToast('Notes saved!');
+}
 function confirmReset() {
   if (!confirm('Reset ALL bill statuses to pending? This cannot be undone.')) return;
   BILLS.forEach((b,i) => { bills[b.num] = {status:'pending',minutes:null,order:i}; });
   if (window._firebaseReady) window._set(window._ref(window._db, 'scsl/bills'), bills);
   renderAdminDocket();
   updateAdminStats();
-  showToast('All bills reset to pending');
+  showToast('All bills reset');
 }
-
 function clearHistory() {
   if (!confirm('Clear end time history chart data?')) return;
   if (window._firebaseReady) window._set(window._ref(window._db, 'scsl/endTimeHistory'), null);
@@ -1159,7 +1400,7 @@ function switchTab(name, el) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(`tab-${name}`).classList.add('active');
-  el.classList.add('active');
+  if (el) el.classList.add('active');
   if (name === 'whatif') recalcWhatIf();
 }
 
@@ -1191,25 +1432,18 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 // Expose globals
-window.login = login;
-window.switchTab = switchTab;
-window.setBillStatus = setBillStatus;
-window.setBillMinutes = setBillMinutes;
-window.setBillVote = setBillVote;
-window.setBillTime = setBillTime;
-window.adminFilter = adminFilter;
-window.updateScheduleTime = updateScheduleTime;
-window.saveSchedule = saveSchedule;
-window.updateWhatIf = updateWhatIf;
-window.recalcWhatIf = recalcWhatIf;
-window.saveGroqKey = saveGroqKey;
-window.savePassword = savePassword;
-window.saveNotes = saveNotes;
-window.connectSheets = connectSheets;
-window.syncSheets = syncSheets;
-window.confirmReset = confirmReset;
-window.clearHistory = clearHistory;
-window.toggleTheme = toggleTheme;
+window.login=login; window.switchTab=switchTab;
+window.setBillStatus=setBillStatus; window.setBillMinutes=setBillMinutes;
+window.setBillVote=setBillVote; window.setBillTime=setBillTime;
+window.adminFilter=adminFilter;
+window.updateScheduleTime=updateScheduleTime; window.saveSchedule=saveSchedule; window.saveDates=saveDates;
+window.updateWhatIf=updateWhatIf; window.recalcWhatIf=recalcWhatIf;
+window.handleXlsxDrop=handleXlsxDrop; window.handleXlsxFile=handleXlsxFile;
+window.importBillBook=importBillBook; window.clearBillBook=clearBillBook; window.cancelUpload=cancelUpload;
+window.connectSheets=connectSheets; window.syncSheets=syncSheets; window.stopAutoSync=stopAutoSync;
+window.saveGroqKey=saveGroqKey; window.savePassword=savePassword;
+window.saveNotes=saveNotes; window.confirmReset=confirmReset; window.clearHistory=clearHistory;
+window.toggleTheme=toggleTheme;
 </script>
 </body>
 </html>
