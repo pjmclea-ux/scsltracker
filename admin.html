@@ -424,6 +424,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
           <div id="colMapSection" style="display:none;margin-top:16px">
             <div style="font-size:0.72rem;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;font-family:var(--font-mono);margin-bottom:10px">Map Columns (auto-detected — verify and adjust if needed)</div>
             <div class="col-map-grid" id="colMapGrid"></div>
+            <div id="importLivePreview" style="margin-top:12px;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-family:var(--font-mono);font-size:0.75rem;color:var(--text3);line-height:1.8">
+              Map columns above to see a live preview of what will be imported.
+            </div>
             <div style="display:flex;gap:10px;margin-top:10px">
               <button class="btn-sm primary" onclick="importBillBook()">✓ Import Bills</button>
               <button class="btn-sm" onclick="cancelUpload()">Cancel</button>
@@ -1100,34 +1103,85 @@ function showColMapper() {
   const grid = document.getElementById('colMapGrid');
   section.style.display = 'block';
 
-  // Auto-detect columns
+  // SheetJS reads xlsx natively — no CSV comma issues.
+  // Detection uses exact-match first, then partial-match, never cross-contaminates.
   const colFields = [
-    {key:'num', label:'Bill No. *', hints:['bill no','bill#','billno','bill num','no.','#']},
-    {key:'author', label:'Bill Author *', hints:['author','delegate','presenter','name']},
-    {key:'school', label:'Delegation *', hints:['delegation','school','college','university','institution']},
-    {key:'topic', label:'Purpose Statement *', hints:['purpose','topic','bill','statement','description']},
-    {key:'hotness', label:'Hotness (1-5, optional)', hints:['hotness','heat','controversy','hot','priority']},
+    {key:'num',    label:'Bill No. *',           exactHints:['bill no.','bill no','bill #','bill#','no.'], partialHints:['billno','billnum']},
+    {key:'author', label:'Bill Author *',         exactHints:['bill author','author','delegate name'],     partialHints:['author','delegate','presenter']},
+    {key:'school', label:'Delegation *',          exactHints:['delegation','school','college'],             partialHints:['delegat','school','college','universit','institution']},
+    {key:'topic',  label:'Purpose Statement *',   exactHints:['purpose statement','purpose'],              partialHints:['purpose','statement']},
+    {key:'hotness',label:'Hotness (1-5, optional)',exactHints:['hotness','heat level'],                    partialHints:['hotness','heat','spic']},
   ];
 
-  const autoDetect = (hints) => {
-    for (const hint of hints) {
-      const idx = xlsxHeaders.findIndex(h => h.toLowerCase().replace(/[^a-z]/g,'').includes(hint.replace(/[^a-z]/g,'')));
+  // Track which columns are already claimed to avoid double-assignment
+  const claimed = new Set();
+
+  const autoDetect = (exactHints, partialHints) => {
+    const norm = (s) => s.toLowerCase().replace(/[^a-z0-9]/g,'');
+    // 1. Exact match (normalized)
+    for (const hint of exactHints) {
+      const idx = xlsxHeaders.findIndex((h,i) => !claimed.has(i) && norm(h) === norm(hint));
+      if (idx !== -1) return idx;
+    }
+    // 2. Starts-with match
+    for (const hint of exactHints) {
+      const idx = xlsxHeaders.findIndex((h,i) => !claimed.has(i) && norm(h).startsWith(norm(hint)));
+      if (idx !== -1) return idx;
+    }
+    // 3. Contains match (partial)
+    for (const hint of partialHints) {
+      const idx = xlsxHeaders.findIndex((h,i) => !claimed.has(i) && norm(h).includes(norm(hint)));
       if (idx !== -1) return idx;
     }
     return -1;
   };
 
+  // Build sample data to show in mapper (first 3 non-empty rows)
+  const sampleRows = xlsxRows.slice(0,3);
+
   grid.innerHTML = colFields.map(f => {
-    const detected = autoDetect(f.hints);
-    const opts = xlsxHeaders.map((h,i) => `<option value="${i}" ${i===detected?'selected':''}>${h}</option>`).join('');
+    const detected = autoDetect(f.exactHints, f.partialHints);
+    if (detected !== -1) claimed.add(detected);
+    const opts = xlsxHeaders.map((h,i) => {
+      // Show sample value in option so user can verify
+      const sample = sampleRows.map(r => String(r[i]||'').trim()).filter(Boolean)[0] || '';
+      const sampleStr = sample.length > 30 ? sample.slice(0,30)+'…' : sample;
+      return `<option value="${i}" ${i===detected?'selected':''}>${h}${sampleStr?' · '+sampleStr:''}</option>`;
+    }).join('');
+    const detectedName = detected >= 0 ? xlsxHeaders[detected] : 'not detected';
+    const detectedColor = detected >= 0 ? 'var(--green)' : 'var(--red)';
     return `<div class="col-map-item">
-      <label>${f.label}</label>
-      <select id="col_${f.key}">
+      <label>${f.label} <span style="color:${detectedColor};font-size:0.65rem">${detected>=0?'→ '+detectedName:'⚠ not found'}</span></label>
+      <select id="col_${f.key}" onchange="previewImport()">
         <option value="-1">— Skip —</option>
         ${opts}
       </select>
     </div>`;
   }).join('');
+
+  previewImport();
+}
+
+function previewImport() {
+  // Live preview: show what first 3 rows would import as
+  const getCol = (key) => { const el=document.getElementById('col_'+key); return el?parseInt(el.value):-1; };
+  const numCol=getCol('num'), authCol=getCol('author'), schoolCol=getCol('school'), topicCol=getCol('topic');
+  const previewEl = document.getElementById('importLivePreview');
+  if (!previewEl) return;
+  if (numCol<0||topicCol<0) { previewEl.textContent='Map required columns to see preview.'; return; }
+  const rows = xlsxRows.slice(0,4);
+  previewEl.innerHTML = '<strong style="color:var(--sky)">Live Preview (first rows):</strong><br>' +
+    rows.map(row => {
+      const num = String(row[numCol]||'').trim();
+      const auth = authCol>=0 ? String(row[authCol]||'').trim() : '—';
+      const school = schoolCol>=0 ? String(row[schoolCol]||'').trim() : '—';
+      const topic = String(row[topicCol]||'').trim();
+      const ok = num && topic;
+      return `<div style="padding:4px 0;border-bottom:1px solid var(--border);font-size:0.75rem;color:${ok?'var(--text2)':'var(--red)'}">
+        <span style="color:var(--sky);font-weight:600">#${num||'?'}</span> · ${auth} · ${school}<br>
+        <span style="color:var(--text3)">${topic.slice(0,80)||'(no topic found — check column mapping!)'}</span>
+      </div>`;
+    }).join('');
 }
 
 function autoHotness(topic) {
@@ -1142,30 +1196,61 @@ function autoHotness(topic) {
 }
 
 function importBillBook() {
-  const getCol = (key) => parseInt(document.getElementById(`col_${key}`)?.value ?? '-1');
-  const numCol = getCol('num');
-  const authCol = getCol('author');
-  const schoolCol = getCol('school');
+  const getCol = (key) => { const el=document.getElementById('col_'+key); return el?parseInt(el.value):-1; };
+  const numCol   = getCol('num');
+  const authCol  = getCol('author');
+  const schoolCol= getCol('school');
   const topicCol = getCol('topic');
-  const hotnessCol = getCol('hotness');
+  const hotnessCol=getCol('hotness');
 
-  if (numCol < 0 || authCol < 0 || schoolCol < 0 || topicCol < 0) {
-    return showToast('Please map Bill No., Author, Delegation, and Purpose Statement');
+  // Validate required mappings
+  const missing = [];
+  if (numCol < 0)   missing.push('Bill No.');
+  if (authCol < 0)  missing.push('Bill Author');
+  if (schoolCol < 0)missing.push('Delegation');
+  if (topicCol < 0) missing.push('Purpose Statement');
+  if (missing.length > 0) return showToast('Please map: ' + missing.join(', '));
+
+  // Warn if any two required cols point to the same column (sign of bad detection)
+  const usedCols = [numCol, authCol, schoolCol, topicCol].filter(c => c >= 0);
+  const uniqueCols = new Set(usedCols);
+  if (uniqueCols.size < usedCols.length) {
+    if (!confirm('⚠️ Warning: two required fields map to the same column — this usually means column detection is off. Check the live preview above. Continue anyway?')) return;
   }
 
   const imported = [];
+  const warnings = [];
   xlsxRows.forEach((row, i) => {
-    const num = parseInt(String(row[numCol]||'').replace(/\D/g,''));
-    if (!num) return;
-    const author = String(row[authCol]||'').trim();
-    const school = String(row[schoolCol]||'').trim();
-    const topic = String(row[topicCol]||'').trim();
+    // SheetJS row is an array — direct index access, NO csv splitting, commas are fine
+    const numRaw = String(row[numCol]??'').trim();
+    const num = parseInt(numRaw.replace(/\D/g,''));
+    if (!num) return; // skip header rows or empty rows
+
+    const author = String(row[authCol]??'').trim();
+    const school = String(row[schoolCol]??'').trim();
+    const topic  = String(row[topicCol]??'').trim(); // commas in topic: totally fine
+
+    // Sanity check: if topic looks like a number or is very short, warn
+    if (topic.length < 5) warnings.push(`Row ${i+2}: Bill #${num} has very short purpose: "${topic}" — check column mapping`);
+    // Sanity check: if author looks like it's from the wrong column
+    if (author && /^\d+$/.test(author)) warnings.push(`Row ${i+2}: Bill #${num} author looks like a number: "${author}"`);
+
     let hotness = hotnessCol >= 0 ? parseInt(row[hotnessCol]) : NaN;
     if (isNaN(hotness) || hotness < 1 || hotness > 5) hotness = autoHotness(topic);
     imported.push({ num, author, school, topic, hotness, order: i });
   });
 
   if (imported.length === 0) return showToast('No valid bills found — check column mapping');
+
+  if (warnings.length > 0) {
+    console.warn('Import warnings:', warnings);
+    if (!confirm(`Imported ${imported.length} bills but found ${warnings.length} potential issue(s):
+
+${warnings.slice(0,3).join('
+')}
+
+Check browser console for full list. Import anyway?`)) return;
+  }
 
   BILLS = imported;
   if (window._firebaseReady) {
@@ -1176,10 +1261,9 @@ function importBillBook() {
   showBillBookPreview();
   renderAdminDocket();
   updateAdminStats();
-  // Update what-if bills remaining
   document.getElementById('wiBillsLeft').value = BILLS.length;
-  showToast(`✓ Imported ${BILLS.length} bills from spreadsheet`);
-  document.getElementById('billBookStatus').textContent = `${BILLS.length} bills loaded`;
+  showToast(`✓ Imported ${imported.length} bills — ${warnings.length} warning(s). Check preview below.`);
+  document.getElementById('billBookStatus').textContent = `${imported.length} bills loaded`;
 }
 
 function showBillBookPreview() {
@@ -1478,7 +1562,7 @@ window.adminFilter=adminFilter;
 window.updateScheduleTime=updateScheduleTime; window.saveSchedule=saveSchedule; window.saveDates=saveDates; window.renderScheduleTotalsWithDates=renderScheduleTotalsWithDates;
 window.updateWhatIf=updateWhatIf; window.recalcWhatIf=recalcWhatIf;
 window.handleXlsxDrop=handleXlsxDrop; window.handleXlsxFile=handleXlsxFile;
-window.importBillBook=importBillBook; window.clearBillBook=clearBillBook; window.cancelUpload=cancelUpload;
+window.importBillBook=importBillBook; window.previewImport=previewImport; window.clearBillBook=clearBillBook; window.cancelUpload=cancelUpload;
 window.connectSheets=connectSheets; window.syncSheets=syncSheets; window.stopAutoSync=stopAutoSync;
 window.saveGroqKey=saveGroqKey; window.savePassword=savePassword;
 window.saveNotes=saveNotes; window.confirmReset=confirmReset; window.clearHistory=clearHistory;
