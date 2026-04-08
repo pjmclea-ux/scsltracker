@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
@@ -161,6 +160,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 .status-in-progress{background:rgba(251,146,60,0.18);color:var(--orange);border:1px solid rgba(251,146,60,0.4);animation:glow 1.5s infinite;}
 .status-tabled-indefinitely{background:rgba(148,163,184,0.12);color:var(--muted);border:1px solid rgba(148,163,184,0.25);}
 @keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(251,146,60,0)}50%{box-shadow:0 0 8px 2px rgba(251,146,60,0.25)}}
+@keyframes glow-orange{0%,100%{box-shadow:0 0 0 0 rgba(251,146,60,0)}50%{box-shadow:0 0 12px 3px rgba(251,146,60,0.3)}}
 
 /* TABLE FOOTER */
 .table-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 0;font-size:0.78rem;color:var(--text3);font-family:var(--font-mono);}
@@ -256,6 +256,42 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
       <div class="factor-item"><div class="factor-name">Session Gaps</div><div class="factor-val warn" id="fGaps">—</div></div>
       <div class="factor-item"><div class="factor-name">Recency Avg</div><div class="factor-val neutral" id="fRecency">—</div></div>
       <div class="factor-item"><div class="factor-name">On Track?</div><div class="factor-val positive" id="fFinish">—</div></div>
+    </div>
+  </div>
+
+  <!-- NOW DEBATING WIDGET -->
+  <div id="nowDebatingBar" style="margin-bottom:16px">
+    <div style="background:linear-gradient(135deg,rgba(251,146,60,0.18),rgba(251,146,60,0.05));border:1px solid rgba(251,146,60,0.45);border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <!-- Current bill display -->
+      <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:240px">
+        <div style="background:var(--orange);border-radius:8px;padding:6px 10px;font-family:var(--font-mono);font-weight:700;font-size:0.72rem;color:white;white-space:nowrap;animation:glow-orange 1.5s infinite">🔴 NOW DEBATING</div>
+        <div id="nowDebatingInfo" style="flex:1">
+          <div id="nowDebatingBillNum" style="font-family:var(--font-display);font-weight:900;font-size:1.5rem;color:var(--orange);line-height:1">—</div>
+          <div id="nowDebatingTopic" style="font-size:0.8rem;color:var(--text2);margin-top:1px;max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">No bill currently on the floor</div>
+          <div id="nowDebatingAuthor" style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono)"></div>
+        </div>
+        <div id="nowDebatingPeppers" style="display:flex;gap:1px"></div>
+      </div>
+      <!-- Floor timer -->
+      <div style="text-align:center;min-width:80px">
+        <div style="font-size:0.65rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.1em;text-transform:uppercase">Floor Time</div>
+        <div id="nowDebatingTimer" style="font-family:var(--font-mono);font-size:1.8rem;font-weight:700;color:var(--orange);line-height:1.1">—</div>
+      </div>
+      <!-- Manual bill number entry -->
+      <div style="display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px">
+        <div>
+          <div style="font-size:0.65rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px">Enter Bill # On Floor</div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input type="number" id="manualBillInput" placeholder="e.g. 127" min="1" max="999"
+              style="width:90px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-family:var(--font-mono);font-size:1rem;font-weight:700;text-align:center"
+              onkeydown="if(event.key==='Enter')setManualBill()"
+              oninput="previewManualBill()">
+            <button onclick="setManualBill()" style="background:var(--orange);border:none;border-radius:6px;padding:6px 14px;color:white;font-weight:700;font-size:0.85rem;cursor:pointer;font-family:var(--font-body);white-space:nowrap">Set →</button>
+            <button onclick="clearManualBill()" title="Clear current bill" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:6px 10px;color:var(--text3);font-size:0.85rem;cursor:pointer">✕</button>
+          </div>
+          <div id="manualBillPreview" style="font-size:0.7rem;color:var(--text3);font-family:var(--font-mono);margin-top:3px;height:14px"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -445,6 +481,7 @@ function initFirebase() {
     recalculate();
     renderDocket();
     updateFilterCounts();
+    updateNowDebating();
   });
 
   onValue(ref(db, 'scsl/bills'), (snap) => {
@@ -453,6 +490,7 @@ function initFirebase() {
     recalculate();
     renderDocket();
     updateFilterCounts();
+    updateNowDebating();
   });
 
   onValue(ref(db, 'scsl/schedule'), (snap) => {
@@ -1024,8 +1062,115 @@ window.addEventListener('DOMContentLoaded', () => {
   setInterval(()=>{ renderSchedule(); recalculate(); },30000);
 });
 
+// ==================== NOW DEBATING WIDGET ====================
+let nowDebatingTimerInterval = null;
+let nowDebatingTimerStart = null;
+
+function updateNowDebating() {
+  // Find any bill marked in-progress (from Firebase bills state)
+  const inProgressBill = BILLS.find(b => normalizeStatus((state.bills[b.num]||{}).status) === 'in-progress');
+
+  // Also check the manually-set bill (stored in state)
+  const manualNum = state.manualCurrentBill;
+  const manualBill = manualNum ? BILLS.find(b => b.num === parseInt(manualNum)) : null;
+
+  const activeBill = inProgressBill || manualBill;
+
+  const numEl    = document.getElementById('nowDebatingBillNum');
+  const topicEl  = document.getElementById('nowDebatingTopic');
+  const authorEl = document.getElementById('nowDebatingAuthor');
+  const pepperEl = document.getElementById('nowDebatingPeppers');
+  const timerEl  = document.getElementById('nowDebatingTimer');
+
+  if (activeBill) {
+    const hotness = activeBill.hotness || 1;
+    const topic = activeBill.topic || activeBill.purpose || activeBill.purposeStatement || '';
+    numEl.textContent    = `Bill #${activeBill.num}`;
+    topicEl.textContent  = topic;
+    authorEl.textContent = `${activeBill.author||''} · ${activeBill.school||activeBill.delegation||''}`;
+    pepperEl.innerHTML   = Array.from({length:5},(_,i)=>`<span style="font-size:1rem;opacity:${i<hotness?1:0.15}">${i<hotness&&hotness>=4?'🌶️':'🌶️'}</span>`).join('');
+
+    // Timer
+    const bData = state.bills[activeBill.num] || {};
+    if (!nowDebatingTimerStart) {
+      // Try to recover start time from Firebase
+      if (bData.startTime) {
+        const today = new Date();
+        const [h,m] = bData.startTime.split(':').map(Number);
+        const startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), h, m, 0);
+        nowDebatingTimerStart = startDate.getTime();
+      } else {
+        nowDebatingTimerStart = Date.now();
+      }
+      if (nowDebatingTimerInterval) clearInterval(nowDebatingTimerInterval);
+      nowDebatingTimerInterval = setInterval(tickNowDebatingTimer, 1000);
+    }
+    tickNowDebatingTimer();
+    timerEl.style.color = 'var(--orange)';
+  } else {
+    numEl.textContent    = '—';
+    topicEl.textContent  = 'No bill currently on the floor';
+    authorEl.textContent = '';
+    pepperEl.innerHTML   = '';
+    timerEl.textContent  = '—';
+    timerEl.style.color  = 'var(--text3)';
+    if (nowDebatingTimerInterval) { clearInterval(nowDebatingTimerInterval); nowDebatingTimerInterval = null; }
+    nowDebatingTimerStart = null;
+  }
+}
+
+function tickNowDebatingTimer() {
+  if (!nowDebatingTimerStart) return;
+  const elapsed = Math.floor((Date.now() - nowDebatingTimerStart) / 1000);
+  const mins = Math.floor(elapsed / 60);
+  const secs = elapsed % 60;
+  document.getElementById('nowDebatingTimer').textContent = `${mins}:${secs.toString().padStart(2,'0')}`;
+}
+
+function previewManualBill() {
+  const val = parseInt(document.getElementById('manualBillInput').value);
+  const previewEl = document.getElementById('manualBillPreview');
+  if (!val || !BILLS.length) { previewEl.textContent = ''; return; }
+  const bill = BILLS.find(b => b.num === val);
+  if (bill) {
+    const topic = (bill.topic||bill.purpose||'').slice(0,50);
+    previewEl.textContent = `→ ${bill.author||''} · ${topic}${topic.length>=50?'…':''}`;
+    previewEl.style.color = 'var(--sky)';
+  } else {
+    previewEl.textContent = `Bill #${val} not found in bill book`;
+    previewEl.style.color = 'var(--red)';
+  }
+}
+
+function setManualBill() {
+  const val = parseInt(document.getElementById('manualBillInput').value);
+  if (!val) return;
+  const bill = BILLS.find(b => b.num === val);
+  if (!bill) { showToast(`Bill #${val} not found in bill book`); return; }
+
+  // Reset timer for new bill
+  nowDebatingTimerStart = null;
+  if (nowDebatingTimerInterval) { clearInterval(nowDebatingTimerInterval); nowDebatingTimerInterval = null; }
+
+  state.manualCurrentBill = val;
+  updateNowDebating();
+  document.getElementById('manualBillInput').value = '';
+  document.getElementById('manualBillPreview').textContent = '';
+  showToast(`Now showing Bill #${val} on floor`);
+}
+
+function clearManualBill() {
+  state.manualCurrentBill = null;
+  nowDebatingTimerStart = null;
+  if (nowDebatingTimerInterval) { clearInterval(nowDebatingTimerInterval); nowDebatingTimerInterval = null; }
+  document.getElementById('manualBillInput').value = '';
+  document.getElementById('manualBillPreview').textContent = '';
+  updateNowDebating();
+}
+
 window.setFilter=setFilter; window.filterDocket=filterDocket; window.goPage=goPage;
 window.callAI=callAI; window.toggleTheme=toggleTheme;
+window.setManualBill=setManualBill; window.clearManualBill=clearManualBill; window.previewManualBill=previewManualBill;
 </script>
 </body>
 </html>
